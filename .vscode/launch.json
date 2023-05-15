@@ -6,7 +6,8 @@
         "request": "launch",
         "name": "Launch Chrome",
         "url": "https://google.com",
-        "runtimeArgs":["--load-extension=${workspaceFolder}/build"]
+        "runtimeArgs":["--load-extension=${workspaceFolder}/build"],
+        "preLaunchTask": "npm: build"
     }
   ]
 }

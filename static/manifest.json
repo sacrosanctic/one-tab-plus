@@ -4,11 +4,18 @@
   "version": "1.0.0",
   "manifest_version": 3,
   "permissions": [
-    "activeTab"
+    "tabs",
+    "bookmarks"
   ],
   "action": {
     "default_title": "Svelte Extension",
     "default_icon": "favicon.png",
     "default_popup": "index.html"
+    
+  },
+  "background": {
+    "service-worker": [
+      "background.js"
+    ]
   }
 }
