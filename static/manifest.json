@@ -5,17 +5,16 @@
   "manifest_version": 3,
   "permissions": [
     "tabs",
-    "bookmarks"
+    "bookmarks",
+    "storage",
+    "scripting"
   ],
   "action": {
     "default_title": "Svelte Extension",
-    "default_icon": "favicon.png",
-    "default_popup": "index.html"
-    
+    "default_icon": "favicon.png"
   },
   "background": {
-    "service-worker": [
-      "background.js"
-    ]
+    "service_worker": "background.js",
+    "type":"module"
   }
 }
