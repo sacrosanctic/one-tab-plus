@@ -26,14 +26,23 @@
 		})
 		worms = list
 	}
+	const removeBookmark = (id) => {
+		bookmarks.remove(id)
+	}
 
 	onMount(async () => {
 		;({ bookmarks } = chrome)
 
-		const node = await bookmarks.search({ title: secretFolder })
-		if (!isFolder(node)) return
+		const nodes = await bookmarks.search({ title: secretFolder })
 
-		worms = node.children
+		if (nodes.length === 0) {
+			//create folder
+			return
+		}
+
+		const myFolder = nodes[0]
+		if (!isFolder(myFolder)) return
+		worms = await bookmarks.getChildren(myFolder.id)
 	})
 </script>
 
@@ -41,6 +50,7 @@
 <button on:click={addBookmark}>add bookmark</button>
 <input type="text" bind:value={search} />
 <button on:click={findBookmark}>find bookmark</button>
-{#each worms as bookmark, i (i)}
-	<pre>{JSON.stringify(bookmark, null, 2)}</pre>
+{#each worms as { id, title, url }, i (i)}
+	<!-- <pre>{JSON.stringify(bookmark, null, 2)}</pre> -->
+	<a href={url} on:click={removeBookmark(id)} target="_blank">{title}</a>
 {/each}
