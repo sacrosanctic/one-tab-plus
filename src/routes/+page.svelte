@@ -1,36 +1,40 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 
-	let bookmarks;
-	const appName = 'oneTabSuper';
-	let worms = [];
-	let search = '';
-	const secretFolder = `${appName} (Do Not Touch!)`;
+	let bookmarks
+	const appName = 'oneTabSuper'
+	let worms = []
+	let search = ''
+	const secretFolder = `${appName} (Do Not Touch!)`
 
-	const isFolder = (node) => node.url === undefined;
+	const isFolder = (node) => node.url === undefined
 
 	const addBookmark = async () => {
-		const test1 = await bookmarks.create({ title: 'home town', url: 'https://google2.com' });
-	};
+		const test1 = await bookmarks.create({ title: 'home town', url: 'https://google2.com' })
+	}
 
-	const seeTree = async () => (worms = await bookmarks.getTree());
+	const seeTree = async () => {
+		const asdf = await bookmarks.getTree()
+		worms = asdf
+		console.log(asdf)
+	}
 
 	const findBookmark = async () => {
 		const list = (await bookmarks.search({ title: search })).map((node) => {
-			node.isFolder = isFolder(node);
-			return node;
-		});
-		worms = list;
-	};
+			node.isFolder = isFolder(node)
+			return node
+		})
+		worms = list
+	}
 
 	onMount(async () => {
-		({ bookmarks } = chrome);
+		;({ bookmarks } = chrome)
 
-		worms = (await bookmarks.search({ title: secretFolder })).map((node) => {
-			node.isFolder = isFolder(node);
-			return node;
-		});
-	});
+		const node = await bookmarks.search({ title: secretFolder })
+		if (!isFolder(node)) return
+
+		worms = node.children
+	})
 </script>
 
 <button on:click={seeTree}>seeTree</button>
