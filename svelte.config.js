@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from 'sveltekit-adapter-chrome-extension';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {

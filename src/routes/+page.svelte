@@ -1,2 +1,16 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	let url = '';
+
+	const getUrl = async () => {
+		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+		if (tab.url !== null) url = tab.url;
+	};
+</script>
+
+<button on:click={getUrl}>reveal current url</button>
+{#if url}
+	<div>
+		The current url is: {url}
+	</div>
+{/if}
