@@ -1,10 +1,10 @@
 const { tabs, runtime, action, contextMenus, bookmarks } = chrome
 
-const appName = 'oneTabSuper'
+const appName = 'One Tab Plus'
 const secretFolder = `${appName} (Do Not Touch!)`
 
 const openTabList = () => {
-	const fileName = 'index.html'
+	const fileName = 'onetabplus.html'
 	const url = runtime.getURL(fileName)
 	tabs.create({ url })
 }

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte'
 
 	let bookmarks, runtime
-	const appName = 'oneTabSuper'
+	const appName = 'One Tab Plus'
 	const secretFolder = `${appName} (Do Not Touch!)`
 	let worms = []
 	let search = ''
@@ -33,7 +33,7 @@
 	const getUrl = (u) => {
 		const url = new URL(chrome.runtime.getURL('/_favicon/'))
 		url.searchParams.set('pageUrl', u)
-		url.searchParams.set('size', '24')
+		url.searchParams.set('size', '36')
 		return url.toString()
 	}
 	const loadBookmarks = async () => {
@@ -59,6 +59,10 @@
 	})
 </script>
 
+<svelte:head>
+	<title>{appName}</title>
+</svelte:head>
+
 <!-- <div class="form-control">
 	<button class="btn" on:click={seeTree}>seeTree</button>
 	<button class="btn" on:click={addBookmark}>add bookmark</button>
@@ -68,14 +72,30 @@
 	</div>
 </div> -->
 <main class="m-2">
-	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Scott's Bookmark Thing</h2>
-	<ul class="pl-4 max-w-md space-y-1 text-gray-500 dark:text-gray-400 text-lg">
+	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">{appName}</h2>
+	<ul class="max-w-xl pl-4 space-y-1 text-gray-500 dark:text-gray-400 text-lg">
 		{#each worms as bookmark, i (i)}
 			<!-- <pre>{JSON.stringify(bookmark, null, 2)}</pre> -->
-			<li>
-				<a href={bookmark.url} on:click={removeBookmark(bookmark.id)} target="_blank"
-					><img class="inline" src={getUrl(bookmark.url)} alt="favicon" /> {bookmark.title}
+			<li class="flex gap-2" title={bookmark.url}>
+				<a
+					class="flex gap-2 items-center"
+					href={bookmark.url}
+					on:click={removeBookmark(bookmark.id)}
+					target="_blank"
+					><img class="inline w-6" src={getUrl(bookmark.url)} alt="favicon" />
+					<span class="overflow-ellipsis overflow-hidden whitespace-nowrap w-72">
+						{bookmark.title}
+					</span>
 				</a>
+				<span class="text-gray-300">
+					{new Intl.DateTimeFormat('en-US', {
+						year: 'numeric',
+						month: 'numeric',
+						day: 'numeric',
+						hour: 'numeric',
+						minute: 'numeric',
+					}).format(new Date(bookmark.dateAdded))}
+				</span>
 			</li>
 		{/each}
 	</ul>

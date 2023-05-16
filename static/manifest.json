@@ -1,6 +1,7 @@
 {
-  "name": "My first Svelte Extension",
-  "description": "A browser extension made with Svelte Kit",
+  "name": "One Tab Plus",
+  "description": "An Extension that stores websites to read later.",
+  "homepage_url":"https://google.com",
   "version": "1.0.0",
   "manifest_version": 3,
   "permissions": [
@@ -12,7 +13,7 @@
     "favicon"
   ],
   "action": {
-    "default_title": "Svelte Extension",
+    "default_title": "One Tab Plus",
     "default_icon": "favicon.png"
   },
   "background": {
