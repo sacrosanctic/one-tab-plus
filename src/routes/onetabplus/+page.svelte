@@ -3,21 +3,10 @@
 
 	let bookmarks, runtime, tabs
 	const appName = 'One Tab Plus'
-	const secretFolder = `${appName} (Do Not Touch!)`
+	const appFolderName = `${appName} (Do Not Touch!)`
 	let worms = []
-	let search = ''
 
 	const isFolder = (node) => node.url === undefined
-	const addBookmark = async (title, url) => {
-		await bookmarks.create({ title, url })
-	}
-	const findBookmark = async () => {
-		const list = (await bookmarks.search({ title: search })).map((node) => {
-			node.isFolder = isFolder(node)
-			return node
-		})
-		worms = list
-	}
 
 	const removeBookmark = (id) => {
 		bookmarks.remove(id)
@@ -29,7 +18,7 @@
 		removeBookmark(id)
 	}
 
-	const getUrl = (u) => {
+	const getFavicon = (u) => {
 		const url = new URL(runtime.getURL('/_favicon/'))
 		url.searchParams.set('pageUrl', u)
 		url.searchParams.set('size', '36')
@@ -37,7 +26,7 @@
 	}
 
 	const getFolderId = async () => {
-		const nodes = await bookmarks.search({ title: secretFolder })
+		const nodes = await bookmarks.search({ title: appFolderName })
 		if (nodes.length === 0) {
 			//create folder
 			return
@@ -51,27 +40,41 @@
 		const id = await getFolderId()
 		worms = (await bookmarks.getChildren(id)).sort((a, b) => b.dateAdded - a.dateAdded)
 	}
+
 	const saveAllTabs = async () => {
 		let allTabs = await tabs.query({ currentWindow: true, pinned: false, windowType: 'normal' })
 		const extensionUrl = runtime.getURL('/')
 
 		allTabs = allTabs.filter((tab) => !tab.url.startsWith(extensionUrl))
 		allTabs = allTabs.sort((a, b) => b.index - a.index)
+		const parentId = await getFolderId()
 
-		let title, url
-		for (const tab of allTabs) {
-			console.log(tab)
-			;({ title, url } = tab)
-			await bookmarks.create({ title, url, parentId: await getFolderId() })
+		for (const { title, url } of allTabs) {
+			await bookmarks.create({ title, url, parentId })
 		}
-		console.log(allTabs)
 		tabs.remove(allTabs.map((tab) => tab.id))
+	}
+
+	const formatDate = (date) => {
+		return new Intl.DateTimeFormat('en-US', {
+			year: 'numeric',
+			month: 'numeric',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: 'numeric',
+		}).format(new Date(date))
 	}
 
 	onMount(async () => {
 		;({ bookmarks, runtime, tabs } = chrome)
 
 		loadBookmarks()
+
+		// add a set of listeners
+		// ['onCreated','onChanged','onMoved','onRemoved','onChildrenReordered'].forEach(event => {
+		//   bookmarks[event].addListener(loadBookmarks)
+		// });
+
 		bookmarks.onCreated.addListener(loadBookmarks)
 		bookmarks.onChanged.addListener(loadBookmarks)
 		bookmarks.onChildrenReordered.addListener(loadBookmarks)
@@ -97,7 +100,7 @@
 							<i class="fas fa-xmark fa-fw fa-lg text-gray-400" />
 						</button>
 					</td>
-					<td class="w-6"><img src={getUrl(bookmark.url)} alt="favicon" /></td>
+					<td class="w-6"><img src={getFavicon(bookmark.url)} alt="favicon" /></td>
 					<td class="max-w-lg px-2">
 						<a
 							class="block text-ellipsis whitespace-nowrap overflow-hidden"
@@ -109,13 +112,7 @@
 						</a>
 					</td>
 					<td class="text-gray-400 w-44">
-						{new Intl.DateTimeFormat('en-US', {
-							year: 'numeric',
-							month: 'numeric',
-							day: 'numeric',
-							hour: 'numeric',
-							minute: 'numeric',
-						}).format(new Date(bookmark.dateAdded))}
+						{formatDate(bookmark.dateAdded)}
 					</td>
 				</tr>
 			{/each}
