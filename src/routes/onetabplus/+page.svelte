@@ -76,8 +76,10 @@
 
 <main class="m-2">
 	<button class="btn btn-primary" on:click={saveAllTabs}>get all tabs</button>
-	<h2 class="mb-2 text-lg font-semibold text-gray-900">{APP_NAME} - {worms.length} tabs</h2>
-	<table class="ml-2 space-y-1 text-gray-500 text-lg">
+	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+		{APP_NAME} - {worms.length} tabs
+	</h2>
+	<table class="ml-2 space-y-1 text-gray-500 text-lg dark:text-gray-400">
 		<tbody>
 			{#each worms as bookmark, i (i)}
 				<!-- <pre>{JSON.stringify(bookmark, null, 2)}</pre> -->
