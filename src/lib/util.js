@@ -2,7 +2,7 @@ import { APP_FOLDER_NAME, OTHER_BOOKMARKS_ID } from './contant'
 
 export const saveCurrentTab = async () => {
 	const { title, url, id } = (await chrome.tabs.query({ active: true, currentWindow: true }))[0]
-	const parentId = await findAppFolder()
+	const parentId = await getAppFolderId()
 
 	await chrome.bookmarks.create({ title, url, parentId })
 	chrome.tabs.remove(id)
@@ -10,7 +10,7 @@ export const saveCurrentTab = async () => {
 
 const isFolder = (node) => node.url === undefined
 
-export const findAppFolder = async () => {
+export const getAppFolderId = async () => {
 	const nodes = await chrome.bookmarks.search({ title: APP_FOLDER_NAME })
 
 	if (nodes.length === 0) {

@@ -1,45 +1,53 @@
 <script>
 	import { APP_NAME } from '$lib/contant'
-	import { findAppFolder } from '$lib/util'
+	import { getAppFolderId } from '$lib/util'
+	import { andThen, forEach, identity, pipe, prop, sortBy } from 'ramda'
 	import { onMount } from 'svelte'
 
-	let bookmarks, runtime, tabs
 	let worms = []
+	const updateBookmarkState = (data) => (worms = data)
 
 	const removeBookmark = (id) => {
-		bookmarks.remove(id)
+		chrome.bookmarks.remove(id)
 		loadBookmarks()
 	}
 
 	const openBookmark = (url, id) => {
-		tabs.create({ active: false, url })
+		chrome.tabs.create({ active: false, url })
 		removeBookmark(id)
 	}
 
 	const getFavicon = (u) => {
-		const url = new URL(runtime.getURL('/_favicon/'))
+		const url = new URL(chrome.runtime.getURL('/_favicon/'))
 		url.searchParams.set('pageUrl', u)
 		url.searchParams.set('size', '36')
 		return url.toString()
 	}
 
-	const loadBookmarks = async () => {
-		const id = await findAppFolder()
-		worms = (await bookmarks.getChildren(id)).sort((a, b) => b.dateAdded - a.dateAdded)
-	}
+	const loadBookmarks = () =>
+		pipe(
+			getAppFolderId,
+			andThen(chrome.bookmarks.getChildren),
+			andThen(sortBy(prop('dateAdded'))),
+			andThen(updateBookmarkState),
+		)()
 
 	const saveAllTabs = async () => {
-		let allTabs = await tabs.query({ currentWindow: true, pinned: false, windowType: 'normal' })
-		const extensionUrl = runtime.getURL('/')
+		let allTabs = await chrome.tabs.query({
+			currentWindow: true,
+			pinned: false,
+			windowType: 'normal',
+		})
+		const extensionUrl = chrome.runtime.getURL('/')
 
 		allTabs = allTabs.filter((tab) => !tab.url.startsWith(extensionUrl))
 		allTabs = allTabs.sort((a, b) => b.index - a.index)
 		const parentId = await findAppFolder()
 
 		for (const { title, url } of allTabs) {
-			await bookmarks.create({ title, url, parentId })
+			await chrome.bookmarks.create({ title, url, parentId })
 		}
-		tabs.remove(allTabs.map((tab) => tab.id))
+		chrome.tabs.remove(allTabs.map((tab) => tab.id))
 	}
 
 	const formatDate = (date) => {
@@ -52,21 +60,15 @@
 		}).format(new Date(date))
 	}
 
+	const addBookmarkListeners = () =>
+		forEach(
+			(event) => chrome.bookmarks[event].addListener(loadBookmarks),
+			['onCreated', 'onChanged', 'onMoved', 'onRemoved', 'onChildrenReordered'],
+		)
+
 	onMount(async () => {
-		;({ bookmarks, runtime, tabs } = chrome)
-
 		loadBookmarks()
-
-		// add a set of listeners
-		// ['onCreated','onChanged','onMoved','onRemoved','onChildrenReordered'].forEach(event => {
-		//   bookmarks[event].addListener(loadBookmarks)
-		// });
-
-		bookmarks.onCreated.addListener(loadBookmarks)
-		bookmarks.onChanged.addListener(loadBookmarks)
-		bookmarks.onChildrenReordered.addListener(loadBookmarks)
-		bookmarks.onMoved.addListener(loadBookmarks)
-		bookmarks.onRemoved.addListener(loadBookmarks)
+		addBookmarkListeners()
 	})
 </script>
 
