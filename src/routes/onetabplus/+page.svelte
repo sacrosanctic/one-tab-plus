@@ -1,12 +1,10 @@
 <script>
+	import { APP_NAME } from '$lib/contant'
+	import { findAppFolder } from '$lib/util'
 	import { onMount } from 'svelte'
 
 	let bookmarks, runtime, tabs
-	const appName = 'One Tab Plus'
-	const appFolderName = `${appName} (Do Not Touch!)`
 	let worms = []
-
-	const isFolder = (node) => node.url === undefined
 
 	const removeBookmark = (id) => {
 		bookmarks.remove(id)
@@ -25,19 +23,8 @@
 		return url.toString()
 	}
 
-	const getFolderId = async () => {
-		const nodes = await bookmarks.search({ title: appFolderName })
-		if (nodes.length === 0) {
-			//create folder
-			return
-		}
-		const myFolder = nodes[0]
-		if (!isFolder(myFolder)) return
-
-		return myFolder.id
-	}
 	const loadBookmarks = async () => {
-		const id = await getFolderId()
+		const id = await findAppFolder()
 		worms = (await bookmarks.getChildren(id)).sort((a, b) => b.dateAdded - a.dateAdded)
 	}
 
@@ -47,7 +34,7 @@
 
 		allTabs = allTabs.filter((tab) => !tab.url.startsWith(extensionUrl))
 		allTabs = allTabs.sort((a, b) => b.index - a.index)
-		const parentId = await getFolderId()
+		const parentId = await findAppFolder()
 
 		for (const { title, url } of allTabs) {
 			await bookmarks.create({ title, url, parentId })
@@ -84,12 +71,12 @@
 </script>
 
 <svelte:head>
-	<title>{appName}</title>
+	<title>{APP_NAME}</title>
 </svelte:head>
 
 <main class="m-2">
 	<button class="btn btn-primary" on:click={saveAllTabs}>get all tabs</button>
-	<h2 class="mb-2 text-lg font-semibold text-gray-900">{appName} - {worms.length} tabs</h2>
+	<h2 class="mb-2 text-lg font-semibold text-gray-900">{APP_NAME} - {worms.length} tabs</h2>
 	<table class="ml-2 space-y-1 text-gray-500 text-lg">
 		<tbody>
 			{#each worms as bookmark, i (i)}
