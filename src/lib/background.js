@@ -1,4 +1,4 @@
-import { openTabList } from '$lib/util'
+import { openTabList, saveCurrentTab } from '$lib/util'
 
 // left click toolbar icon
 chrome.action.onClicked.addListener(saveCurrentTab)
