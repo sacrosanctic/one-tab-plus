@@ -1,4 +1,5 @@
-import { APP_FOLDER_NAME, OTHER_BOOKMARKS_ID } from './contant'
+import { objOf, pipe, propEq } from 'ramda'
+import { APP_FOLDER_NAME, OTHER_BOOKMARKS_ID } from './constant'
 
 export const saveCurrentTab = async () => {
 	const { title, url, id } = (await chrome.tabs.query({ active: true, currentWindow: true }))[0]
@@ -8,7 +9,7 @@ export const saveCurrentTab = async () => {
 	chrome.tabs.remove(id)
 }
 
-const isFolder = (node) => node.url === undefined
+export const isFolder = (node) => propEq(undefined, 'url', node)
 
 export const getAppFolderId = async () => {
 	const nodes = await chrome.bookmarks.search({ title: APP_FOLDER_NAME })
@@ -24,7 +25,10 @@ export const getAppFolderId = async () => {
 	}
 }
 
-export const openTabList = () => {
-	const url = chrome.runtime.getURL('onetabplus.html')
-	chrome.tabs.create({ url })
-}
+export const openTabList = () =>
+	pipe(
+		//
+		chrome.runtime.getURL,
+		objOf('url'),
+		chrome.tabs.create,
+	)('onetabplus.html')
