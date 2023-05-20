@@ -3,7 +3,17 @@ import { APP_FOLDER_NAME, OTHER_BOOKMARKS_ID } from './constant'
 
 export const saveCurrentTab = async () => {
 	const { title, url, id } = (await chrome.tabs.query({ active: true, currentWindow: true }))[0]
-	const parentId = await getAppFolderId()
+	const date = Intl.DateTimeFormat('en-US', {
+		year: 'numeric',
+		month: 'numeric',
+		day: 'numeric',
+	}).format(new Date())
+	const bookmark = await chrome.bookmarks.create({
+		title: date,
+		parentId: await getAppFolderId(),
+		index: 0,
+	})
+	const parentId = bookmark.id
 
 	await chrome.bookmarks.create({ title, url, parentId })
 	chrome.tabs.remove(id)

@@ -13,9 +13,12 @@
 		loadBookmarks()
 	}
 
-	const openBookmark = (url, id) => {
+	const openBookmark = async ({ url, id, parentId }) => {
 		chrome.tabs.create({ active: false, url })
-		removeBookmark(id)
+		chrome.bookmarks.remove(id)
+		if ((await chrome.bookmarks.getChildren(parentId)).length === 0)
+			chrome.bookmarks.remove(parentId)
+		loadBookmarks()
 	}
 
 	const getFavicon = (u) => {
@@ -81,11 +84,12 @@
 		const bookmark = await chrome.bookmarks.create({
 			title: date,
 			parentId: await getAppFolderId(),
+			index: 0,
 		})
 		const parentId = bookmark.id
 
 		for (const { title, url } of allTabs) {
-			await chrome.bookmarks.create({ title, url, parentId })
+			await chrome.bookmarks.create({ title, url, parentId, index: 0 })
 		}
 		chrome.tabs.remove(pluck('id', allTabs))
 	}
@@ -138,7 +142,7 @@
 							<a
 								class="block text-ellipsis whitespace-nowrap overflow-hidden w-fit"
 								href={bookmark.url}
-								on:click|preventDefault={openBookmark(bookmark.url, bookmark.id)}
+								on:click|preventDefault={openBookmark(bookmark)}
 								target="_blank"
 							>
 								{bookmark.title}
