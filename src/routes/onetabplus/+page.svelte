@@ -19,6 +19,7 @@
 	import Tables from './Tables.svelte'
 
 	let worms = []
+	let loading = false
 	const resetWorms = () => (worms = [])
 	const updateWorms = (data) => (worms = [...worms, data])
 
@@ -42,7 +43,10 @@
 		return url.toString()
 	}
 
-	const loadBookmarks = () =>
+	const loadBookmarks = () => {
+		if (loading) return
+		loading = true
+
 		pipe(
 			tap(resetWorms),
 			getAppFolderId,
@@ -65,7 +69,9 @@
 					}),
 				),
 			),
+			() => (loading = false),
 		)()
+	}
 
 	const saveAllTabs = async () => {
 		let allTabs = await chrome.tabs.query({
