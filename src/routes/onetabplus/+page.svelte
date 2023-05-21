@@ -23,17 +23,16 @@
 	const resetWorms = () => (worms = [])
 	const updateWorms = (data) => (worms = [...worms, data])
 
-	const removeBookmark = ({ id }) => {
-		chrome.bookmarks.remove(id)
-		loadBookmarks()
-	}
-
-	const openBookmark = async ({ url, id, parentId }) => {
-		chrome.tabs.create({ active: false, url })
+	const removeBookmark = async ({ url, id, parentId }) => {
 		chrome.bookmarks.remove(id)
 		if ((await chrome.bookmarks.getChildren(parentId)).length === 0)
 			chrome.bookmarks.remove(parentId)
 		loadBookmarks()
+	}
+
+	const openBookmark = (bookmark) => {
+		chrome.tabs.create({ active: false, url: bookmark.url })
+		removeBookmark(bookmark)
 	}
 
 	const getFavicon = (u) => {
