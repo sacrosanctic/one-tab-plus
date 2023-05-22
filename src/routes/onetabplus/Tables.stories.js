@@ -1,6 +1,7 @@
 import { last, of, pipe, slice } from 'ramda'
 import Component from './Tables.svelte'
 import data from './data.js'
+import { faker } from '@faker-js/faker'
 
 // More on how to set up stories at: https://storybook.js.org/docs/svelte/writing-stories/introduction
 export default {
@@ -32,5 +33,31 @@ export const OneBookmark = {
 export const TwoFolders = {
 	args: {
 		bookmarks: slice(0, 3, data),
+	},
+}
+
+export const LongName = {
+	args: {
+		bookmarks: [
+			{
+				dateAdded: 1684573189599,
+				dateGroupModified: 1684573189601,
+				id: '28',
+				index: 4,
+				parentId: '7',
+				title: faker.lorem.lines(4),
+				children: [
+					{
+						dateAdded: 1684573189601,
+						id: '29',
+						index: 0,
+						parentId: '28',
+						title: faker.lorem.lines(4),
+						url: 'chrome://newtab/',
+						favicon: '/favicon.png',
+					},
+				],
+			},
+		],
 	},
 }
