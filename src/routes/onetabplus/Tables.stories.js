@@ -42,16 +42,16 @@ export const LongName = {
 			{
 				dateAdded: 1684573189599,
 				dateGroupModified: 1684573189601,
-				id: '28',
+				id: '40',
 				index: 4,
 				parentId: '7',
 				title: faker.lorem.lines(4),
 				children: [
 					{
 						dateAdded: 1684573189601,
-						id: '29',
+						id: '41',
 						index: 0,
-						parentId: '28',
+						parentId: '40',
 						title: faker.lorem.lines(4),
 						url: 'chrome://newtab/',
 						favicon: '/favicon.png',
