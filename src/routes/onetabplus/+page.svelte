@@ -1,7 +1,7 @@
 <script>
 	import { APP_NAME } from '$lib/constant'
 	import { getAppFolderId, isFolder } from '$lib/util'
-	import { assoc, converge, forEach, identity, map, pipe, pluck, prop, reduce } from 'ramda'
+	import { assoc, converge, forEach, identity, map, pathOr, pipe, pluck, prop, reduce } from 'ramda'
 	import { onMount } from 'svelte'
 	import Tables from './Tables.svelte'
 
@@ -44,11 +44,11 @@
 					),
 					temp.children,
 				)
+				stuff.push(temp)
 			} else {
 				// ignore for now
 				// put in a separate folder for processing, maybe user entry via mobile devices
 			}
-			stuff.push(temp)
 		}
 		worms = stuff
 	}
@@ -107,7 +107,7 @@
 			['onCreated', 'onChanged', 'onMoved', 'onRemoved', 'onChildrenReordered'],
 			// ['onChanged'],
 		)
-	$: numOfTabs = reduce((acc, elm) => acc + elm.children.length, 0)(worms)
+	$: numOfTabs = reduce((acc, elm) => acc + pathOr(0, ['children', 'length'], elm), 0)(worms)
 
 	onMount(async () => {
 		loadBookmarks()
