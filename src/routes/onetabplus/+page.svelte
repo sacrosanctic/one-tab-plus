@@ -1,27 +1,11 @@
 <script>
 	import { APP_NAME } from '$lib/constant'
-	import { getAppFolderId, isFolder } from '$lib/util'
-	import {
-		andThen,
-		assoc,
-		converge,
-		filter,
-		forEach,
-		identity,
-		map,
-		pipe,
-		pluck,
-		prop,
-		reduce,
-		tap,
-	} from 'ramda'
+	import { getAppFolderId } from '$lib/util'
+	import { assoc, converge, forEach, identity, map, pipe, pluck, prop, reduce } from 'ramda'
 	import { onMount } from 'svelte'
 	import Tables from './Tables.svelte'
 
 	let worms = []
-	let loading = false
-	const resetWorms = () => (worms = [])
-	const updateWorms = (data) => (worms = [...worms, data])
 
 	const removeBookmark = async ({ url, id, parentId }) => {
 		chrome.bookmarks.remove(id)
@@ -42,34 +26,26 @@
 		return url.toString()
 	}
 
-	const loadBookmarks = () => {
-		if (loading) return
-		loading = true
+	const loadBookmarks = async () => {
+		let stuff = []
 
-		pipe(
-			tap(resetWorms),
-			getAppFolderId,
-			andThen(chrome.bookmarks.getChildren),
-			andThen(
-				pipe(
+		const appFolderId = await getAppFolderId()
+		const folders = await chrome.bookmarks.getChildren(appFolderId)
+
+		for (const folder of folders) {
+			let temp = folder
+			temp.children = await chrome.bookmarks.getChildren(temp.id)
+			temp.children = map(
+				converge(
 					//
-					filter(isFolder),
-					forEach(async (folder) => {
-						folder.children = await chrome.bookmarks.getChildren(folder.id)
-						folder.children = map(
-							converge(
-								//
-								assoc('favicon'),
-								[pipe(prop('url'), getFavicon), identity],
-							),
-							folder.children,
-						)
-						updateWorms(folder)
-					}),
+					assoc('favicon'),
+					[pipe(prop('url'), getFavicon), identity],
 				),
-			),
-			() => (loading = false),
-		)()
+				temp.children,
+			)
+			stuff.push(temp)
+		}
+		worms = stuff
 	}
 
 	const saveAllTabs = async () => {
@@ -124,6 +100,7 @@
 		forEach(
 			(event) => chrome.bookmarks[event].addListener(loadBookmarks),
 			['onCreated', 'onChanged', 'onMoved', 'onRemoved', 'onChildrenReordered'],
+			// ['onChanged'],
 		)
 	$: numOfTabs = reduce((acc, elm) => acc + elm.children.length, 0)(worms)
 
