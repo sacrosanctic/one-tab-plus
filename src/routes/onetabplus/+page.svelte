@@ -1,6 +1,6 @@
 <script>
 	import { APP_NAME } from '$lib/constant'
-	import { getAppFolderId } from '$lib/util'
+	import { getAppFolderId, isFolder } from '$lib/util'
 	import { assoc, converge, forEach, identity, map, pipe, pluck, prop, reduce } from 'ramda'
 	import { onMount } from 'svelte'
 	import Tables from './Tables.svelte'
@@ -32,17 +32,22 @@
 		const appFolderId = await getAppFolderId()
 		const folders = await chrome.bookmarks.getChildren(appFolderId)
 
-		for (const folder of folders) {
-			let temp = folder
-			temp.children = await chrome.bookmarks.getChildren(temp.id)
-			temp.children = map(
-				converge(
-					//
-					assoc('favicon'),
-					[pipe(prop('url'), getFavicon), identity],
-				),
-				temp.children,
-			)
+		for (const bookmark of folders) {
+			let temp = bookmark
+			if (isFolder(bookmark)) {
+				temp.children = await chrome.bookmarks.getChildren(temp.id)
+				temp.children = map(
+					converge(
+						//
+						assoc('favicon'),
+						[pipe(prop('url'), getFavicon), identity],
+					),
+					temp.children,
+				)
+			} else {
+				// ignore for now
+				// put in a separate folder for processing, maybe user entry via mobile devices
+			}
 			stuff.push(temp)
 		}
 		worms = stuff
