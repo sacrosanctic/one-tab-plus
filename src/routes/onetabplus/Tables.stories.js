@@ -1,3 +1,4 @@
+import { last, of, pipe, slice } from 'ramda'
 import Component from './Tables.svelte'
 import data from './data.js'
 
@@ -10,7 +11,7 @@ export default {
 }
 
 // More on writing stories with args: https://storybook.js.org/docs/svelte/writing-stories/args
-export const Primary = {
+export const Overview = {
 	args: {
 		bookmarks: data,
 	},
@@ -24,12 +25,12 @@ export const NoBookmarks = {
 
 export const OneBookmark = {
 	args: {
-		bookmarks: data.splice(-1),
+		bookmarks: pipe(last, of(Array))(data),
 	},
 }
 
 export const TwoFolders = {
 	args: {
-		bookmarks: data.splice(0, 2),
+		bookmarks: slice(0, 3, data),
 	},
 }
