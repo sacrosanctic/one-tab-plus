@@ -32,7 +32,7 @@ export const OneBookmark = {
 
 export const TwoFolders = {
 	args: {
-		bookmarks: slice(0, 3, data),
+		bookmarks: slice(0, 2, data),
 	},
 }
 
@@ -53,6 +53,32 @@ export const LongName = {
 						index: 0,
 						parentId: '40',
 						title: faker.lorem.lines(4),
+						url: 'chrome://newtab/',
+						favicon: '/favicon.png',
+					},
+				],
+			},
+		],
+	},
+}
+
+export const MissingFavicon = {
+	args: {
+		bookmarks: [
+			{
+				dateAdded: 1684573189599,
+				dateGroupModified: 1684573189601,
+				id: '40',
+				index: 4,
+				parentId: '7',
+				title: 'not interesting title',
+				children: [
+					{
+						dateAdded: 1684573189601,
+						id: '41',
+						index: 0,
+						parentId: '40',
+						title: faker.lorem.words(8),
 						url: 'chrome://newtab/',
 						favicon: '/favicon.png',
 					},
