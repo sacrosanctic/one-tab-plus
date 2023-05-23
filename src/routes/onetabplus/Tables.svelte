@@ -27,7 +27,7 @@
 					<tr title={bookmark.url} transition:fade>
 						<td class="whitespace-nowrap w-[0.1%]">
 							<button on:click={dispatch('removeBookmark', bookmark)}>
-								<i class="fas fa-xmark fa-fw fa-lg text-gray-400" />
+								<i id="close-button" class="fas fa-xmark fa-fw fa-lg text-gray-400 opacity-0" />
 							</button>
 						</td>
 						<td class="w-6"><img src={bookmark.favicon} alt="favicon" /></td>
@@ -50,3 +50,9 @@
 		</table>
 	</div>
 {/each}
+
+<style>
+	tr:hover #close-button {
+		@apply opacity-100;
+	}
+</style>
