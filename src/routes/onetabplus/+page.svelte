@@ -1,117 +1,54 @@
 <script>
 	import { APP_NAME } from '$lib/constant'
-	import { getAppFolderId, isFolder } from '$lib/util'
-	import { assoc, converge, forEach, identity, map, pathOr, pipe, pluck, prop, reduce } from 'ramda'
+	import {
+		getAppFolderId,
+		getFavicon,
+		isFolder,
+		onBookmarkChange,
+		openBookmark,
+		removeBookmark,
+		saveAllTabs,
+	} from '$lib/util'
+	import { add, assoc, converge, identity, map, pathOr, pipe, prop, reduce, useWith } from 'ramda'
 	import { onMount } from 'svelte'
 	import Tables from './BookmarkGroup.svelte'
 
-	let worms = []
-
-	const removeBookmark = async ({ url, id, parentId }) => {
-		chrome.bookmarks.remove(id)
-		if ((await chrome.bookmarks.getChildren(parentId)).length === 0)
-			chrome.bookmarks.remove(parentId)
-		loadBookmarks()
-	}
-
-	const openBookmark = (bookmark) => {
-		chrome.tabs.create({ active: false, url: bookmark.url })
-		removeBookmark(bookmark)
-	}
-
-	const getFavicon = (u) => {
-		const url = new URL(chrome.runtime.getURL('/_favicon/'))
-		url.searchParams.set('pageUrl', u)
-		url.searchParams.set('size', '36')
-		return url.toString()
-	}
+	let bookmarkTree = []
 
 	const loadBookmarks = async () => {
-		let stuff = []
-
 		const appFolderId = await getAppFolderId()
-		const folders = await chrome.bookmarks.getChildren(appFolderId)
+		const root = await chrome.bookmarks.getChildren(appFolderId)
+		let temp = []
 
-		for (const bookmark of folders) {
-			let temp = bookmark
+		for (const bookmark of root) {
 			if (isFolder(bookmark)) {
-				temp.children = await chrome.bookmarks.getChildren(temp.id)
-				temp.children = map(
+				let children
+				children = await chrome.bookmarks.getChildren(bookmark.id)
+				children = map(
 					converge(
 						//
 						assoc('favicon'),
 						[pipe(prop('url'), getFavicon), identity],
 					),
-					temp.children,
+					children,
 				)
-				stuff.push(temp)
+				temp.push({ ...bookmark, children })
 			} else {
 				// ignore for now
 				// put in a separate folder for processing, maybe user entry via mobile devices
 			}
 		}
-		worms = stuff
+		bookmarkTree = temp
 	}
 
-	const saveAllTabs = async () => {
-		let allTabs = await chrome.tabs.query({
-			currentWindow: true,
-			pinned: false,
-			windowType: 'normal',
-		})
-		const extensionUrl = chrome.runtime.getURL('/')
+	$: numOfTabs = reduce(
+		useWith(add, [identity, pathOr(0, ['children', 'length'])]),
+		0,
+	)(bookmarkTree)
 
-		allTabs = allTabs.filter((tab) => !tab.url.startsWith(extensionUrl))
-		allTabs = allTabs.sort((a, b) => b.index - a.index)
-		const parentId = await getAppFolderId()
-
-		for (const { title, url } of allTabs) {
-			await chrome.bookmarks.create({ title, url, parentId })
-		}
-		chrome.tabs.remove(allTabs.map((tab) => tab.id))
-	}
-
-	const saveAllTabs2 = async () => {
-		let allTabs = await chrome.tabs.query({
-			currentWindow: true,
-			pinned: false,
-			windowType: 'normal',
-		})
-		const extensionUrl = chrome.runtime.getURL('/')
-
-		allTabs = allTabs.filter((tab) => !tab.url.startsWith(extensionUrl))
-		allTabs = allTabs.sort((a, b) => b.index - a.index)
-
-		const date = Intl.DateTimeFormat('en-US', {
-			year: 'numeric',
-			month: 'numeric',
-			day: 'numeric',
-		}).format(new Date())
-
-		const bookmark = await chrome.bookmarks.create({
-			title: date,
-			parentId: await getAppFolderId(),
-			index: 0,
-		})
-		const parentId = bookmark.id
-
-		for (const { title, url } of allTabs) {
-			await chrome.bookmarks.create({ title, url, parentId, index: 0 })
-		}
-		chrome.tabs.remove(pluck('id', allTabs))
-	}
-
-	const addBookmarkListeners = () =>
-		forEach(
-			(event) => chrome.bookmarks[event].addListener(loadBookmarks),
-			['onCreated', 'onChanged', 'onMoved', 'onRemoved', 'onChildrenReordered'],
-			// ['onChanged'],
-		)
-	$: numOfTabs = reduce((acc, elm) => acc + pathOr(0, ['children', 'length'], elm), 0)(worms)
-
-	onMount(async () => {
+	onMount(() => {
 		loadBookmarks()
-		addBookmarkListeners()
+		onBookmarkChange(loadBookmarks)
 	})
 </script>
 
@@ -121,12 +58,11 @@
 
 <main class="m-2">
 	<button class="btn btn-primary" on:click={saveAllTabs}>get all tabs</button>
-	<button class="btn btn-primary" on:click={saveAllTabs2}>save all tabs (w/ folders)</button>
 	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
 		{APP_NAME} - {numOfTabs} tabs
 	</h2>
 	<Tables
-		bind:bookmarks={worms}
+		bind:bookmarks={bookmarkTree}
 		on:openBookmark={(e) => openBookmark(e.detail)}
 		on:removeBookmark={(e) => removeBookmark(e.detail)}
 	/>
