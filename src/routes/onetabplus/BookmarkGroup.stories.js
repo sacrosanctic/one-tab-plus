@@ -1,11 +1,11 @@
 import { last, of, pipe, slice } from 'ramda'
-import Component from './Tables.svelte'
+import Component from './BookmarkGroup.svelte'
 import data from './data.js'
 import { faker } from '@faker-js/faker'
 
 // More on how to set up stories at: https://storybook.js.org/docs/svelte/writing-stories/introduction
 export default {
-	title: 'Example/Tables',
+	title: 'BookmarkGroup',
 	component: Component,
 	tags: ['autodocs'],
 	argTypes: {},

@@ -3,7 +3,7 @@
 	import { getAppFolderId, isFolder } from '$lib/util'
 	import { assoc, converge, forEach, identity, map, pathOr, pipe, pluck, prop, reduce } from 'ramda'
 	import { onMount } from 'svelte'
-	import Tables from './Tables.svelte'
+	import Tables from './BookmarkGroup.svelte'
 
 	let worms = []
 
