@@ -22,7 +22,7 @@
 		<td> invalid bookmark </td>
 	</tr>
 {:else}
-	<tr title={bookmark.url} transition:fade>
+	<tr title={bookmark.url}>
 		<td class="whitespace-nowrap w-[0.1%]">
 			<button on:click={dispatch('removeBookmark', bookmark)}>
 				<i id="close-button" class="fas fa-xmark fa-fw fa-lg text-gray-400 opacity-0" />
