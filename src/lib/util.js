@@ -97,3 +97,5 @@ export const getFavicon = (u) => {
 	url.searchParams.set('size', '36')
 	return url.toString()
 }
+
+export const updateTitle = ({ id, title }) => chrome.bookmarks.update(id, { title })

@@ -8,6 +8,7 @@
 		openBookmark,
 		removeBookmark,
 		saveAllTabs,
+		updateTitle,
 	} from '$lib/util'
 	import { add, assoc, converge, identity, map, pathOr, pipe, prop, reduce, useWith } from 'ramda'
 	import { onMount } from 'svelte'
@@ -63,6 +64,7 @@
 	</h2>
 	<Tables
 		bind:bookmarks={bookmarkTree}
+		on:titleChange={(e) => updateTitle(e.detail)}
 		on:openBookmark={(e) => openBookmark(e.detail)}
 		on:removeBookmark={(e) => removeBookmark(e.detail)}
 	/>

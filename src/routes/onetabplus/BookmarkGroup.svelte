@@ -1,4 +1,6 @@
 <script>
+	import InPlaceInput from './InPlaceInput.svelte'
+
 	import { fade } from 'svelte/transition'
 	import Bookmark from './Bookmark.svelte'
 
@@ -8,7 +10,7 @@
 {#each bookmarks as { children, title, id } (id)}
 	<div transition:fade>
 		<h2 class=" text-lg text-gray-900 dark:text-white mb-2 font-semibold">
-			{title} - {children.length} tabs
+			<InPlaceInput on:titleChange {id} {title} /> - {children.length} tabs
 		</h2>
 		<table class="ml-2 space-y-1 text-gray-500 text-lg dark:text-gray-400 w-1/2">
 			<tbody>
