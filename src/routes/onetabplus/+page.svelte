@@ -12,7 +12,7 @@
 	} from '$lib/util'
 	import { add, assoc, converge, identity, map, pathOr, pipe, prop, reduce, useWith } from 'ramda'
 	import { onMount } from 'svelte'
-	import Tables from './BookmarkGroup.svelte'
+	import BookmarkGroup from './BookmarkGroup.svelte'
 
 	let bookmarkTree = []
 
@@ -62,10 +62,12 @@
 	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
 		{APP_NAME} - {numOfTabs} tabs
 	</h2>
-	<Tables
-		bind:bookmarks={bookmarkTree}
-		on:titleChange={(e) => updateTitle(e.detail)}
-		on:openBookmark={(e) => openBookmark(e.detail)}
-		on:removeBookmark={(e) => removeBookmark(e.detail)}
-	/>
+	{#each bookmarkTree as bookmarks}
+		<BookmarkGroup
+			{bookmarks}
+			on:titleChange={(e) => updateTitle(e.detail)}
+			on:openBookmark={(e) => openBookmark(e.detail)}
+			on:removeBookmark={(e) => removeBookmark(e.detail)}
+		/>
+	{/each}
 </main>
