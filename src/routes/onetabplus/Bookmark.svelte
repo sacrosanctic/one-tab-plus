@@ -18,35 +18,30 @@
 </script>
 
 {#if isNil(bookmark) || isEmpty(bookmark)}
-	<tr>
+	<li>
 		<td> invalid bookmark </td>
-	</tr>
+	</li>
 {:else}
-	<tr title={bookmark.url}>
-		<td class="whitespace-nowrap w-[0.1%]">
-			<button on:click={dispatch('removeBookmark', bookmark)}>
-				<i id="close-button" class="fas fa-xmark fa-fw fa-lg text-gray-400 opacity-0" />
-			</button>
-		</td>
-		<td class="w-6"><img src={bookmark.favicon} alt="favicon" /></td>
-		<td class="max-w-lg px-2">
+	<li title={bookmark.url} class="flex items-center gap-4 border rounded-md p-4 bg-white">
+		<img class="h-11 aspect-square" src={bookmark.favicon} alt="favicon" />
+
+		<div class="overflow-hidden">
 			<a
-				class="block text-ellipsis whitespace-nowrap overflow-hidden w-fit"
+				class="text-black block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-none"
 				href={bookmark.url}
 				on:click|preventDefault={dispatch('openBookmark', bookmark)}
 				target="_blank"
 			>
 				{bookmark.title}
 			</a>
-		</td>
-		<td class="text-gray-400 w-44">
-			{formatDate(bookmark.dateAdded)}
-		</td>
-	</tr>
-{/if}
+			<p class="font-medium text-sm mt-1.5">
+				<i class="fa-regular fa-calendar mr-1" />
+				{formatDate(bookmark.dateAdded)}
+			</p>
+		</div>
 
-<style>
-	tr:hover #close-button {
-		@apply opacity-100;
-	}
-</style>
+		<button class="w-12 ml-auto flex-shrink-0" on:click={dispatch('removeBookmark', bookmark)}>
+			<i id="close-button" class="fas fa-xmark fa-fw fa-lg text-gray-400" />
+		</button>
+	</li>
+{/if}

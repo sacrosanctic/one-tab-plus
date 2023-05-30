@@ -35,7 +35,7 @@ export const OneBookmark = {
 					favicon: '/favicon.png',
 				},
 			],
-		},,
+		},
 	},
 }
 

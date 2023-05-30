@@ -62,12 +62,14 @@
 	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
 		{APP_NAME} - {numOfTabs} tabs
 	</h2>
-	{#each bookmarkTree as bookmarks}
-		<BookmarkGroup
-			{bookmarks}
-			on:titleChange={(e) => updateTitle(e.detail)}
-			on:openBookmark={(e) => openBookmark(e.detail)}
-			on:removeBookmark={(e) => removeBookmark(e.detail)}
-		/>
-	{/each}
+	<div class="space-y-2">
+		{#each bookmarkTree as bookmarks}
+			<BookmarkGroup
+				{bookmarks}
+				on:titleChange={(e) => updateTitle(e.detail)}
+				on:openBookmark={(e) => openBookmark(e.detail)}
+				on:removeBookmark={(e) => removeBookmark(e.detail)}
+			/>
+		{/each}
+	</div>
 </main>

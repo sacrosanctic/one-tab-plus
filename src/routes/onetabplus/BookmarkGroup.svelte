@@ -16,19 +16,20 @@
 </script>
 
 <div transition:fade>
-	<h2 class=" text-lg text-gray-900 dark:text-white mb-2 font-semibold">
+	<h2 class="text-lg text-gray-500 dark:text-white mb-2 font-semibold capitalize">
 		<InPlaceInput on:titleChange id={bookmarks.id} title={bookmarks.title} /> - {bookmarks.children
 			.length} tabs
 	</h2>
-	<table class="ml-2 space-y-1 text-gray-500 text-lg dark:text-gray-400 w-1/2">
-		<tbody
+	<section class="text-gray-500 text-lg dark:text-gray-400 w-full sm:w-4/6">
+		<ul
 			use:dndzone={{ items: bookmarks.children, flipDurationMs }}
 			on:consider={handleDndConsider}
 			on:finalize={handleDndFinalize}
+			class="space-y-4"
 		>
 			{#each bookmarks.children as bookmark (bookmark.id)}
 				<Bookmark {bookmark} on:openBookmark on:removeBookmark />
 			{/each}
-		</tbody>
-	</table>
+		</ul>
+	</section>
 </div>
