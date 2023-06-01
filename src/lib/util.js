@@ -47,12 +47,17 @@ export const openTabList = () =>
 export const removeBookmark = async ({ id, parentId }) => {
 	await chrome.bookmarks.remove(id)
 	await deleteEmptyFolder(parentId)
-	loadBookmarks()
 }
 
 export const openBookmark = async (bookmark) => {
 	await chrome.tabs.create({ active: false, url: bookmark.url })
 	removeBookmark(bookmark)
+}
+
+export const moveBookmark = async (payload) => {
+	console.log(payload)
+	await chrome.bookmarks.move(payload[0], payload[1])
+	// await deleteEmptyFolder(parentId)
 }
 
 export const deleteEmptyFolder = async (id) =>

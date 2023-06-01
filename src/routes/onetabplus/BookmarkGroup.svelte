@@ -1,17 +1,52 @@
 <script>
-	import InPlaceInput from './InPlaceInput.svelte'
+	import { createEventDispatcher } from 'svelte'
+	import { dndzone } from 'svelte-dnd-action'
 	import { fade } from 'svelte/transition'
 	import Bookmark from './Bookmark.svelte'
-	import { dndzone } from 'svelte-dnd-action'
+	import InPlaceInput from './InPlaceInput.svelte'
+
+	const dispatch = createEventDispatcher()
 
 	export let bookmarks = {}
+
+	const findIndexOfNewItem = (arr1, arr2) => {
+		if (arr1.length >= arr2.length) return -1
+		if (arr1.length === 0) return 0
+
+		for (let i = 0; i < arr2.length; i++) {
+			if (arr1[i] !== arr2[i]) return i
+		}
+
+		// If no mismatch is found, return fail(-1)
+		return -1
+	}
 
 	const flipDurationMs = 300
 	const handleDndConsider = (e) => {
 		bookmarks.children = e.detail.items
 	}
 	const handleDndFinalize = (e) => {
-		bookmarks.children = e.detail.items
+		// chrome.bookmarks.move(id,{index:0,parentId})
+
+		// console.log(bookmarks.children, e.detail.items)
+
+		// console.log(`parentId: ${bookmarks.id}`)
+		// console.log(`index: ${findIndexOfNewItem(bookmarks.children, e.detail.items)}`)
+		// console.log(`id: ${e.detail.info.id}`)
+		// console.log(e)
+
+		const index = findIndexOfNewItem(bookmarks.children, e.detail.items)
+
+		if (index !== -1) {
+			bookmarks.children = e.detail.items
+			dispatch('moveBookmark', [
+				e.detail.info.id,
+				{
+					index,
+					parentId: bookmarks.id,
+				},
+			])
+		}
 	}
 </script>
 
