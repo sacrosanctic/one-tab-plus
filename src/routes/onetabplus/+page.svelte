@@ -43,7 +43,11 @@
 	}
 
 	$: numOfTabs = reduce(
-		useWith(add, [identity, pathOr(0, ['children', 'length'])]),
+		useWith(add, [
+			//
+			identity,
+			pathOr(0, ['children', 'length']),
+		]),
 		0,
 	)(bookmarkTree)
 
@@ -63,7 +67,7 @@
 		{APP_NAME} - {numOfTabs} tabs
 	</h2>
 	<div class="space-y-2">
-		{#each bookmarkTree as bookmarks}
+		{#each bookmarkTree as bookmarks (bookmarks.id)}
 			<BookmarkGroup
 				{bookmarks}
 				on:titleChange={(e) => updateTitle(e.detail)}
