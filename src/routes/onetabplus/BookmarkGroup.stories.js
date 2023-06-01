@@ -1,5 +1,5 @@
-import Component from './BookmarkGroup.svelte'
 import { faker } from '@faker-js/faker'
+import Component from './BookmarkGroup.svelte'
 
 // More on how to set up stories at: https://storybook.js.org/docs/svelte/writing-stories/introduction
 export default {
@@ -35,7 +35,7 @@ export const OneBookmark = {
 					favicon: '/favicon.png',
 				},
 			],
-		},,
+		},
 	},
 }
 
