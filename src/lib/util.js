@@ -1,4 +1,4 @@
-import { objOf, pipe, propEq, equals, forEach, length, pluck, assoc } from 'ramda'
+import { andThen, assoc, forEach, objOf, pipe, pluck, propEq, when } from 'ramda'
 import { APP_FOLDER_NAME, OTHER_BOOKMARKS_ID } from './constant'
 
 export const saveCurrentTab = async () => {
@@ -45,20 +45,25 @@ export const openTabList = () =>
 	)('onetabplus.html')
 
 export const removeBookmark = async ({ id, parentId }) => {
-	chrome.bookmarks.remove(id)
-	const children = await chrome.bookmarks.getChildren(parentId)
-	if (pipe(length, equals(0))(children)) chrome.bookmarks.remove(parentId)
+	await chrome.bookmarks.remove(id)
+	await deleteEmptyFolder(parentId)
 	loadBookmarks()
 }
 
-export const openBookmark = (bookmark) => {
-	chrome.tabs.create({ active: false, url: bookmark.url })
+export const openBookmark = async (bookmark) => {
+	await chrome.tabs.create({ active: false, url: bookmark.url })
 	removeBookmark(bookmark)
 }
 
-export const onBookmarkChange = (fn) =>
+export const deleteEmptyFolder = async (id) =>
+	pipe(
+		chrome.bookmarks.getChildren(id),
+		andThen(when(propEq(0, 'length'), chrome.bookmarks.remove(id))),
+	)()
+
+export const onBookmarkChange = (handler) =>
 	forEach(
-		(event) => chrome.bookmarks[event].addListener(fn),
+		(event) => chrome.bookmarks[event].addListener(handler),
 		['onCreated', 'onChanged', 'onMoved', 'onRemoved', 'onChildrenReordered'],
 	)
 
@@ -95,7 +100,7 @@ export const saveAllTabs = async () => {
 export const getFavicon = (u) => {
 	const url = new URL(chrome.runtime.getURL('/_favicon/'))
 	url.searchParams.set('pageUrl', u)
-	url.searchParams.set('size', '36')
+	url.searchParams.set('size', '64')
 	return url.toString()
 }
 
