@@ -1,7 +1,6 @@
 <script>
 	import { isEmpty, isNil } from 'ramda'
 	import { createEventDispatcher } from 'svelte'
-	import { fade } from 'svelte/transition'
 
 	const dispatch = createEventDispatcher()
 
@@ -18,11 +17,20 @@
 </script>
 
 {#if isNil(bookmark) || isEmpty(bookmark)}
-	<li>
-		<td> invalid bookmark </td>
+	<li class="flex items-center gap-2 rounded-md p-2 bg-white">
+		<div class="ml-1 w-4" />
+		<i class="fas fa-xmark h-11 fa-3x aspect-square text-red-200" />
+		<div
+			class="text-black block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-none"
+		>
+			invalid bookmark
+		</div>
 	</li>
 {:else}
-	<li title={bookmark.url} class="flex items-center gap-4 border rounded-md p-4 bg-white">
+	<li title={bookmark.url} class="flex items-center gap-2 rounded-md p-2 bg-white">
+		<button class="ml-1 w-4 opacity-0" on:click={dispatch('removeBookmark', bookmark)}>
+			<i class="fas fa-xmark fa-lg text-gray-400" />
+		</button>
 		<img class="h-11 aspect-square" src={bookmark.favicon} alt="favicon" />
 
 		<div class="overflow-hidden">
@@ -30,18 +38,19 @@
 				class="text-black block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-none"
 				href={bookmark.url}
 				on:click|preventDefault={dispatch('openBookmark', bookmark)}
-				target="_blank"
 			>
 				{bookmark.title}
 			</a>
 			<p class="font-medium text-sm mt-1.5">
-				<i class="fa-regular fa-calendar mr-1" />
+				<i class="far fa-calendar mr-1" />
 				{formatDate(bookmark.dateAdded)}
 			</p>
 		</div>
-
-		<button class="w-12 ml-auto flex-shrink-0" on:click={dispatch('removeBookmark', bookmark)}>
-			<i id="close-button" class="fas fa-xmark fa-fw fa-lg text-gray-400" />
-		</button>
 	</li>
 {/if}
+
+<style>
+	li:hover button {
+		@apply opacity-100;
+	}
+</style>
