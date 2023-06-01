@@ -30,8 +30,8 @@
 </script>
 
 {#if editing}
-	<form on:submit|preventDefault={submit} on:keydown={cancel} class="inline-block capitalize">
-		<input bind:value={title} on:blur={submit} use:focus />
+	<form on:submit|preventDefault={submit} on:keydown={cancel} class="inline-block">
+		<input bind:value={title} on:blur={submit} use:focus class="capitalize" />
 	</form>
 {:else}
 	<button type="button" on:click={edit} class="text-left capitalize">
