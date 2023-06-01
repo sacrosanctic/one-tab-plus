@@ -1,5 +1,5 @@
 import { assoc, forEach, objOf, pipe, pluck, propEq, when } from 'ramda'
-import { APP_FOLDER_NAME, OTHER_BOOKMARKS_ID } from './constant'
+import { APP_FOLDER_NAME, MAIN_PAGE, OTHER_BOOKMARKS_ID } from './constant'
 
 export const saveCurrentTab = async () => {
 	const { title, url, id } = (await chrome.tabs.query({ active: true, currentWindow: true }))[0]
@@ -42,7 +42,7 @@ export const openTabList = () =>
 		objOf('url'),
 		assoc('pinned', true),
 		chrome.tabs.create,
-	)('onetabplus.html')
+	)(MAIN_PAGE)
 
 export const removeBookmark = async ({ id, parentId }) => {
 	await chrome.bookmarks.remove(id)
@@ -108,3 +108,61 @@ export const getFavicon = (u) => {
 }
 
 export const updateTitle = ({ id, title }) => chrome.bookmarks.update(id, { title })
+
+/**
+ *
+ * @param {*} action
+ *
+ * defines an event on action button left click
+ */
+export const onActionLeftClick = (action) => {
+	switch (action) {
+		case 'saveCurrentTab':
+			chrome.action.onClicked.addListener(saveCurrentTab)
+			break
+		case 'openSidePanel':
+			chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
+			break
+		default:
+			break
+	}
+}
+
+export const onActionRightClick = () => {
+	// create context menu
+	chrome.contextMenus.removeAll()
+
+	const menus = [
+		{
+			title: 'Open as Tab',
+			id: 'openTab',
+		},
+		{
+			title: 'Open as Side Panel',
+			id: 'openSidePanel',
+		},
+	]
+	forEach(
+		(menu) =>
+			chrome.contextMenus.create({
+				...menu,
+				contexts: ['action'],
+			}),
+		menus,
+	)
+
+	// listen for right clicks for toolbar icon
+	chrome.contextMenus.onClicked.addListener(async (e) => {
+		switch (e.menuItemId) {
+			case 'openTab':
+				openTabList()
+				break
+			case 'openSidePanel':
+				console.log('sidepanel')
+				chrome.sidePanel.setOptions({ enabled: true, path: 'onetabplus.html' })
+				break
+			default:
+				break
+		}
+	})
+}
