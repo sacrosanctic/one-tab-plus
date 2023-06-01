@@ -12,6 +12,7 @@
 	} from '$lib/util'
 	import { add, assoc, converge, identity, map, pathOr, pipe, prop, reduce, useWith } from 'ramda'
 	import { onMount } from 'svelte'
+	import { flip } from 'svelte/animate'
 	import BookmarkGroup from './BookmarkGroup.svelte'
 
 	let bookmarkTree = []
@@ -68,12 +69,14 @@
 	</h2>
 	<div class="space-y-2">
 		{#each bookmarkTree as bookmarks (bookmarks.id)}
-			<BookmarkGroup
-				{bookmarks}
-				on:titleChange={(e) => updateTitle(e.detail)}
-				on:openBookmark={(e) => openBookmark(e.detail)}
-				on:removeBookmark={(e) => removeBookmark(e.detail)}
-			/>
+			<div animate:flip>
+				<BookmarkGroup
+					{bookmarks}
+					on:titleChange={(e) => updateTitle(e.detail)}
+					on:openBookmark={(e) => openBookmark(e.detail)}
+					on:removeBookmark={(e) => removeBookmark(e.detail)}
+				/>
+			</div>
 		{/each}
 	</div>
 </main>
