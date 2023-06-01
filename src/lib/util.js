@@ -1,4 +1,4 @@
-import { objOf, pipe, propEq, equals, forEach, length, pluck } from 'ramda'
+import { objOf, pipe, propEq, equals, forEach, length, pluck, assoc } from 'ramda'
 import { APP_FOLDER_NAME, OTHER_BOOKMARKS_ID } from './constant'
 
 export const saveCurrentTab = async () => {
@@ -40,6 +40,7 @@ export const openTabList = () =>
 		//
 		chrome.runtime.getURL,
 		objOf('url'),
+		assoc('pinned', true),
 		chrome.tabs.create,
 	)('onetabplus.html')
 
