@@ -1,4 +1,4 @@
-import { andThen, assoc, forEach, objOf, pipe, pluck, propEq, when } from 'ramda'
+import { assoc, forEach, objOf, pipe, pluck, propEq, when } from 'ramda'
 import { APP_FOLDER_NAME, OTHER_BOOKMARKS_ID } from './constant'
 
 export const saveCurrentTab = async () => {
@@ -47,7 +47,6 @@ export const openTabList = () =>
 export const removeBookmark = async ({ id, parentId }) => {
 	await chrome.bookmarks.remove(id)
 	await deleteEmptyFolder(parentId)
-	loadBookmarks()
 }
 
 export const openBookmark = async (bookmark) => {
@@ -55,11 +54,15 @@ export const openBookmark = async (bookmark) => {
 	removeBookmark(bookmark)
 }
 
-export const deleteEmptyFolder = async (id) =>
-	pipe(
-		chrome.bookmarks.getChildren(id),
-		andThen(when(propEq(0, 'length'), chrome.bookmarks.remove(id))),
-	)()
+export const deleteEmptyFolder = async (id) => {
+	const children = chrome.bookmarks.getChildren(id)
+	when(
+		//
+		propEq(0, 'length'),
+		chrome.bookmarks.remove(id),
+		children,
+	)
+}
 
 export const onBookmarkChange = (handler) =>
 	forEach(
