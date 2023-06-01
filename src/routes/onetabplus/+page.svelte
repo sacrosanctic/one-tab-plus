@@ -59,7 +59,7 @@
 
 <main class="m-2">
 	<button class="btn btn-primary" on:click={saveAllTabs}>get all tabs</button>
-	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-200">
 		{APP_NAME} - {numOfTabs} tabs
 	</h2>
 	<div class="space-y-2">
