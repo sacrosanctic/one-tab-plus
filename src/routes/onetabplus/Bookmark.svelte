@@ -17,11 +17,13 @@
 </script>
 
 {#if isNil(bookmark) || isEmpty(bookmark)}
-	<li class="flex items-center gap-2 rounded-md p-2 bg-white dark:border-gray-200 dark:bg-none">
+	<li
+		class="flex items-center gap-2 rounded-md p-2 bg-white dark:bg-inherit dark:border-gray-300 dark:border"
+	>
 		<div class="ml-1 w-4" />
 		<i class="fas fa-xmark h-11 fa-3x aspect-square text-red-200" />
 		<div
-			class="text-black block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-none"
+			class="text-gray-900 dark:text-gray-300 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-none"
 		>
 			invalid bookmark
 		</div>
@@ -29,7 +31,7 @@
 {:else}
 	<li
 		title={bookmark.url}
-		class="flex items-center gap-2 rounded-md p-2 bg-white dark:border-gray-200 dark:bg-inherit"
+		class="flex items-center gap-2 rounded-md p-2 bg-white dark:border-gray-300 dark:bg-inherit dark:border"
 	>
 		<button class="w-4 opacity-0" on:click={dispatch('removeBookmark', bookmark)}>
 			<i class="fas fa-xmark fa-lg text-gray-400" />
@@ -38,7 +40,7 @@
 
 		<div class="overflow-hidden">
 			<a
-				class="text-gray-900 dark:text-gray-200 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-none"
+				class="text-gray-900 dark:text-gray-300 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-none"
 				href={bookmark.url}
 				on:click|preventDefault={dispatch('openBookmark', bookmark)}
 			>
@@ -52,7 +54,7 @@
 	</li>
 {/if}
 
-<style>
+<style lang="postcss">
 	li:hover button {
 		@apply opacity-100;
 	}
