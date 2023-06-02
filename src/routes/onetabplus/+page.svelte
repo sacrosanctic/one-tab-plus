@@ -6,6 +6,7 @@
 		isFolder,
 		onBookmarkChange,
 		openBookmark,
+		openTabList,
 		removeBookmark,
 		saveAllTabs,
 		updateTitle,
@@ -63,7 +64,10 @@
 </svelte:head>
 
 <main class="m-2">
-	<button class="btn btn-primary" on:click={saveAllTabs}>get all tabs</button>
+	<button type="button" class="btn" on:click={saveAllTabs}>get all tabs</button>
+	<button class="btn" type="button" on:click={openTabList}>
+		<i class="fas fa-up-right-from-square" />
+	</button>
 	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-200">
 		{APP_NAME} - {numOfTabs} tabs
 	</h2>
