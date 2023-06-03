@@ -97,6 +97,8 @@ export const saveAllTabs = async () => {
 	for (const { title, url } of allTabs) {
 		await chrome.bookmarks.create({ title, url, parentId, index: 0 })
 	}
+	//prevent window from closing by opening a new tab
+	await chrome.tabs.create({ active: false, url: 'chrome://newtab' })
 	chrome.tabs.remove(pluck('id', allTabs))
 }
 
