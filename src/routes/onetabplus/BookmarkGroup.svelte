@@ -6,6 +6,7 @@
 	import { createEventDispatcher } from 'svelte'
 	import { flip } from 'svelte/animate'
 	import { ANIMATION_DURATION } from '$lib/constant'
+	import { dndFreeze } from '$lib/store'
 
 	const dispatch = createEventDispatcher()
 
@@ -61,7 +62,11 @@
 	</h2>
 	<section class="text-gray-500 text-lg dark:text-gray-400 w-full sm:w-4/6">
 		<ul
-			use:dndzone={{ items: bookmarks.children, dragDisabled, flipDurationMs: ANIMATION_DURATION }}
+			use:dndzone={{
+				items: bookmarks.children,
+				dragDisabled: dragDisabled || $dndFreeze,
+				flipDurationMs: ANIMATION_DURATION,
+			}}
 			on:consider={handleDndConsider}
 			on:finalize={handleDndFinalize}
 			class="space-y-4"
@@ -94,8 +99,9 @@
 								class="h-9 aspect-square"
 								tabindex={dragDisabled ? 0 : -1}
 								aria-label="drag-handle"
-								class:cursor-grab={dragDisabled}
+								class:cursor-grab={dragDisabled && !$dndFreeze}
 								class:cursor-grabbing={!dragDisabled}
+								class:cursor-not-allowed={$dndFreeze}
 								on:mousedown={startDrag}
 								on:mouseup={stopDrag}
 								on:touchstart={startDrag}
