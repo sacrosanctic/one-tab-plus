@@ -1,5 +1,5 @@
 <script>
-	import { APP_NAME } from '$lib/constant'
+	import { ANIMATION_DURATION, APP_NAME } from '$lib/constant'
 	import {
 		getAppFolderId,
 		getFavicon,
@@ -73,7 +73,7 @@
 	</h2>
 	<div class="space-y-2">
 		{#each bookmarkTree as bookmarks (bookmarks.id)}
-			<div animate:flip>
+			<div animate:flip={{ duration: ANIMATION_DURATION }}>
 				<BookmarkGroup
 					{bookmarks}
 					on:titleChange={(e) => updateTitle(e.detail)}

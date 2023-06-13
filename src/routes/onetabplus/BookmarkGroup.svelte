@@ -5,13 +5,13 @@
 	import { isEmpty, isNil } from 'ramda'
 	import { createEventDispatcher } from 'svelte'
 	import { flip } from 'svelte/animate'
+	import { ANIMATION_DURATION } from '$lib/constant'
 
 	const dispatch = createEventDispatcher()
 
 	export let bookmarks = {}
 	let dragDisabled = true
 
-	const flipDurationMs = 200
 	const handleDndConsider = (e) => {
 		bookmarks.children = e.detail.items
 
@@ -61,7 +61,7 @@
 	</h2>
 	<section class="text-gray-500 text-lg dark:text-gray-400 w-full sm:w-4/6">
 		<ul
-			use:dndzone={{ items: bookmarks.children, dragDisabled, flipDurationMs }}
+			use:dndzone={{ items: bookmarks.children, dragDisabled, flipDurationMs: ANIMATION_DURATION }}
 			on:consider={handleDndConsider}
 			on:finalize={handleDndFinalize}
 			class="space-y-4"
@@ -69,7 +69,7 @@
 			{#each bookmarks.children as bookmark (bookmark.id)}
 				<!-- <Bookmark {bookmark} on:openBookmark on:removeBookmark />
 				 -->
-				<div animate:flip={{ duration: flipDurationMs }} class="cursor-default">
+				<div animate:flip={{ duration: ANIMATION_DURATION }} class="cursor-default">
 					{#if isNil(bookmark) || isEmpty(bookmark)}
 						<li
 							class="flex items-center gap-2 rounded-md p-2 bg-white dark:bg-inherit dark:border-gray-300 dark:border"
