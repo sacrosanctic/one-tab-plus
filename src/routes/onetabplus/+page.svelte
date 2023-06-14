@@ -1,5 +1,5 @@
 <script>
-	import { APP_NAME } from '$lib/constant'
+	import { ANIMATION_DURATION, APP_NAME } from '$lib/constant'
 	import {
 		getAppFolderId,
 		getFavicon,
@@ -7,14 +7,35 @@
 		moveBookmark,
 		onBookmarkChange,
 		openBookmark,
+		openTabList,
 		removeBookmark,
 		saveAllTabs,
 		updateTitle,
 	} from '$lib/util'
-	import { add, assoc, converge, identity, map, pathOr, pipe, prop, reduce, useWith } from 'ramda'
+	import {
+		add,
+		always,
+		applySpec,
+		ascend,
+		assoc,
+		converge,
+		descend,
+		flatten,
+		identity,
+		map,
+		of,
+		pathOr,
+		pipe,
+		pluck,
+		prop,
+		reduce,
+		sortWith,
+		useWith,
+	} from 'ramda'
 	import { onMount } from 'svelte'
 	import { flip } from 'svelte/animate'
 	import BookmarkGroup from './BookmarkGroup.svelte'
+	import { dndFreeze } from '$lib/store'
 
 	let bookmarkTree = []
 
@@ -42,6 +63,7 @@
 			}
 		}
 		bookmarkTree = temp
+		$dndFreeze = false
 	}
 
 	$: numOfTabs = reduce(
@@ -57,6 +79,31 @@
 		loadBookmarks()
 		onBookmarkChange(loadBookmarks)
 	})
+
+	const reset = () => {
+		$dndFreeze = true
+		loadBookmarks()
+	}
+
+	const sortBookmark = async (sort) => {
+		await loadBookmarks()
+		bookmarkTree = pipe(
+			//
+			pluck('children'),
+			flatten,
+			map(assoc('parentId', '9999')),
+			sortWith(sort),
+			applySpec({
+				title: always('Sort By Date (Newest)'),
+				id: always('9999'),
+				dateAdded: always(new Date()),
+				index: always(0),
+				children: identity,
+			}),
+			of(Array),
+		)(bookmarkTree)
+		$dndFreeze = true
+	}
 </script>
 
 <svelte:head>
@@ -64,13 +111,39 @@
 </svelte:head>
 
 <main class="m-2">
-	<button class="btn btn-primary" on:click={saveAllTabs}>get all tabs</button>
+	<button type="button" class="btn" on:click={saveAllTabs}>get all tabs</button>
+	<button class="btn" type="button" on:click={openTabList}>
+		<i class="fas fa-up-right-from-square" />
+	</button>
+	<button class="btn" type="button" on:click={() => sortBookmark([ascend(prop('dateAdded'))])}>
+		<i class="fas fa-arrow-down-long" />
+		<i class="fas fa-calendar" />
+	</button>
+	<button class="btn" type="button" on:click={() => sortBookmark([descend(prop('dateAdded'))])}>
+		<i class="fas fa-arrow-up-long" />
+		<i class="fas fa-calendar" />
+	</button>
+	<button
+		class="btn"
+		type="button"
+		on:click={() =>
+			sortBookmark([
+				ascend(pipe(prop('url'), (url) => new URL(url).hostname)),
+				ascend(prop('title')),
+			])}
+	>
+		<i class="fas fa-arrow-down-long" />
+		<i class="fas fa-house" />
+	</button>
+	<button class="btn" type="button" on:click={reset}>
+		<i class="fas fa-filter-circle-xmark" />
+	</button>
 	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-200">
 		{APP_NAME} - {numOfTabs} tabs
 	</h2>
 	<div class="space-y-2">
 		{#each bookmarkTree as bookmarks (bookmarks.id)}
-			<div animate:flip>
+			<div animate:flip={{ duration: ANIMATION_DURATION }}>
 				<BookmarkGroup
 					{bookmarks}
 					on:titleChange={(e) => updateTitle(e.detail)}

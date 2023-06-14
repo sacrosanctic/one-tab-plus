@@ -2,17 +2,9 @@
 	"name": "One Tab Plus",
 	"description": "An Extension that stores websites to read later.",
 	"homepage_url": "https://google.com",
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"manifest_version": 3,
-	"permissions": [
-		"tabs",
-		"bookmarks",
-		"storage",
-		"scripting",
-		"contextMenus",
-		"favicon",
-		"sidePanel"
-	],
+	"permissions": ["tabs", "bookmarks", "contextMenus", "favicon", "sidePanel"],
 	"action": {
 		"default_title": "One Tab Plus",
 		"default_icon": "favicon.png"
