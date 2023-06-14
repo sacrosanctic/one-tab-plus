@@ -12,13 +12,13 @@
 
 	export let bookmarks = {}
 	let dragDisabled = true
+	let originalItems = bookmarks.children
 
-	const findIndexOfNewItem = (arr1, arr2) => {
-		if (arr1.length >= arr2.length) return -1
-		if (arr1.length === 0) return 0
+	const findIndexOfNewItem = (from, to) => {
+		if (from.length === 0) return 0
 
-		for (let i = 0; i < arr2.length; i++) {
-			if (arr1[i] !== arr2[i]) return i
+		for (let i = 0; i < to.length; i++) {
+			if (from[i] !== to[i]) return i
 		}
 
 		// If no mismatch is found, return fail(-1)
@@ -37,16 +37,10 @@
 	}
 
 	const handleDndFinalize = (e) => {
-		// chrome.bookmarks.move(id,{index:0,parentId})
+		if (e.detail.info.source === SOURCES.POINTER) dragDisabled = true
+		if (e.detail.info.trigger === TRIGGERS.DROPPED_INTO_ANOTHER) return
 
-		// console.log(bookmarks.children, e.detail.items)
-
-		// console.log(`parentId: ${bookmarks.id}`)
-		// console.log(`index: ${findIndexOfNewItem(bookmarks.children, e.detail.items)}`)
-		// console.log(`id: ${e.detail.info.id}`)
-		// console.log(e)
-
-		const index = findIndexOfNewItem(bookmarks.children, e.detail.items)
+		const index = findIndexOfNewItem(originalItems, e.detail.items)
 
 		if (index !== -1) {
 			bookmarks.children = e.detail.items
@@ -57,8 +51,8 @@
 					parentId: bookmarks.id,
 				},
 			])
+			originalItems = bookmarks.children
 		}
-		if (e.detail.info.source === SOURCES.POINTER) dragDisabled = true
 	}
 
 	const startDrag = (e) => {
@@ -88,6 +82,7 @@
 
 <div transition:fade>
 	<h2 class="text-lg text-gray-500 dark:text-white mb-2 font-semibold capitalize">
+		{bookmarks.id}
 		<InPlaceInput on:titleChange id={bookmarks.id} title={bookmarks.title} /> - {bookmarks.children
 			.length} tabs
 	</h2>
@@ -147,6 +142,7 @@
 									href={bookmark.url}
 									on:click|preventDefault={dispatch('openBookmark', bookmark)}
 								>
+									{bookmark.id}
 									{bookmark.title}
 								</a>
 								<p class="font-medium text-xs mt-1">

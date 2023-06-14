@@ -149,7 +149,7 @@
 					on:titleChange={(e) => updateTitle(e.detail)}
 					on:openBookmark={(e) => openBookmark(e.detail)}
 					on:removeBookmark={(e) => removeBookmark(e.detail)}
-					on:moveBookmark={(e) => moveBookmark(e.detail)}
+					on:moveBookmark={(e) => moveBookmark(...e.detail)}
 				/>
 			</div>
 		{/each}
