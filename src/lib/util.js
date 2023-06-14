@@ -2,21 +2,22 @@ import { andThen, assoc, forEach, objOf, path, pipe, pluck, propEq, when } from 
 import { APP_FOLDER_NAME, MAIN_PAGE, OTHER_BOOKMARKS_ID } from './constant'
 
 export const saveCurrentTab = async () => {
-	const { title, url, id } = (await chrome.tabs.query({ active: true, currentWindow: true }))[0]
-	const date = Intl.DateTimeFormat('en-US', {
-		year: 'numeric',
-		month: 'numeric',
-		day: 'numeric',
-	}).format(new Date())
-	const bookmark = await chrome.bookmarks.create({
-		title: date,
-		parentId: await getAppFolderId(),
-		index: 0,
-	})
-	const parentId = bookmark.id
+	const nodes = await chrome.tabs.query({ active: true, currentWindow: true })
+	const bookmark = nodes[0]
+	const { title, url, id } = bookmark
 
-	await chrome.bookmarks.create({ title, url, parentId })
+	await chrome.bookmarks.create({ title, url, parentId: await getIntakeBookmark() })
 	chrome.tabs.remove(id)
+}
+
+export const getIntakeBookmark = async () => {
+	const appFolderId = await getAppFolderId()
+	const children = await chrome.bookmarks.getChildren(appFolderId)
+	const bookmark = find(propEq('intake', 'title'), children)
+
+	return bookmark
+		? bookmark.id
+		: (await chrome.bookmarks.create({ title: 'intake', parentId: appFolderId, index: 0 })).id
 }
 
 export const isFolder = (node) => propEq(undefined, 'url', node)
