@@ -47,8 +47,12 @@
 
 		for (const bookmark of root) {
 			if (isFolder(bookmark)) {
-				let children
-				children = await chrome.bookmarks.getChildren(bookmark.id)
+				let children = []
+				try {
+					children = await chrome.bookmarks.getChildren(bookmark.id)
+				} catch (error) {
+					// ignore when theres no bookmark
+				}
 				children = map(
 					converge(
 						//
