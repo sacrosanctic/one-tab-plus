@@ -36,6 +36,7 @@
 	import { flip } from 'svelte/animate'
 	import BookmarkGroup from './BookmarkGroup.svelte'
 	import { dndFreeze } from '$lib/store'
+	import { fade } from 'svelte/transition'
 
 	let bookmarkTree = []
 
@@ -143,7 +144,10 @@
 	</h2>
 	<div class="space-y-2">
 		{#each bookmarkTree as bookmarks (bookmarks.id)}
-			<div animate:flip={{ duration: ANIMATION_DURATION }}>
+			<div
+				animate:flip={{ duration: ANIMATION_DURATION }}
+				transition:fade={{ duration: ANIMATION_DURATION }}
+			>
 				<BookmarkGroup
 					{bookmarks}
 					on:titleChange={(e) => updateTitle(e.detail)}
