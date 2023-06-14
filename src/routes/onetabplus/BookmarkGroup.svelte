@@ -82,7 +82,6 @@
 
 <div transition:fade={{ duration: ANIMATION_DURATION }}>
 	<h2 class="text-lg text-gray-500 dark:text-white mb-2 font-semibold capitalize">
-		{bookmarks.id}
 		<InPlaceInput on:titleChange id={bookmarks.id} title={bookmarks.title} /> - {bookmarks.children
 			.length} tabs
 	</h2>
@@ -142,7 +141,6 @@
 									href={bookmark.url}
 									on:click|preventDefault={dispatch('openBookmark', bookmark)}
 								>
-									{bookmark.id}
 									{bookmark.title}
 								</a>
 								<p class="font-medium text-xs mt-1">
