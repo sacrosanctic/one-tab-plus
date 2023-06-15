@@ -81,10 +81,11 @@
 </script>
 
 <div transition:fade={{ duration: ANIMATION_DURATION }}>
-	<h2 class="text-lg text-gray-500 dark:text-white mb-2 font-semibold capitalize">
+	<h2 class="text-lg text-gray-500 dark:text-white font-semibold capitalize">
 		<InPlaceInput on:titleChange id={bookmarks.id} title={bookmarks.title} /> - {bookmarks.children
 			.length} tabs
 	</h2>
+	<button class="text-sm" on:click={dispatch('openAllTabs', bookmarks.id)}>Open All</button>
 	<section class="text-gray-500 text-lg dark:text-gray-400 w-full sm:w-4/6">
 		<ul
 			use:dndzone={{

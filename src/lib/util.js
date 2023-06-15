@@ -62,6 +62,15 @@ export const moveBookmark = async (id, obj) => {
 	await chrome.bookmarks.move(id, obj)
 	await deleteEmptyFolder(parentId)
 }
+export const openAllTabs = async (id) => {
+	const children = await chrome.bookmarks.getChildren(id)
+
+	for (const child of children) {
+		await chrome.tabs.create({ url: child.url })
+		await chrome.bookmarks.remove(child.id)
+	}
+	await deleteEmptyFolder(id)
+}
 
 export const deleteEmptyFolder = async (id) => {
 	await pipe(

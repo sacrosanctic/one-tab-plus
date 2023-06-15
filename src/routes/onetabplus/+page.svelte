@@ -6,6 +6,7 @@
 		isFolder,
 		moveBookmark,
 		onBookmarkChange,
+		openAllTabs,
 		openBookmark,
 		openTabList,
 		removeBookmark,
@@ -158,6 +159,7 @@
 					on:openBookmark={(e) => openBookmark(e.detail)}
 					on:removeBookmark={(e) => removeBookmark(e.detail)}
 					on:moveBookmark={(e) => moveBookmark(...e.detail)}
+					on:openAllTabs={(e) => openAllTabs(e.detail)}
 				/>
 			</div>
 		{/each}
