@@ -2,8 +2,8 @@
 	import { createEventDispatcher } from 'svelte'
 	import { fade } from 'svelte/transition'
 	import InPlaceInput from './InPlaceInput.svelte'
-	import { dndzone, SOURCES, TRIGGERS } from 'svelte-dnd-action'
-	import { isEmpty, isNil } from 'ramda'
+	import { dndzone, SOURCES, TRIGGERS, SHADOW_PLACEHOLDER_ITEM_ID } from 'svelte-dnd-action'
+	import { findIndex, isEmpty, isNil, propEq } from 'ramda'
 	import { flip } from 'svelte/animate'
 	import { ANIMATION_DURATION } from '$lib/constant'
 	import { dndFreeze } from '$lib/store'
@@ -12,20 +12,12 @@
 
 	export let bookmarks = {}
 	let dragDisabled = true
-	let originalItems = bookmarks.children
-
-	const findIndexOfNewItem = (from, to) => {
-		if (from.length === 0) return 0
-
-		for (let i = 0; i < to.length; i++) {
-			if (from[i] !== to[i]) return i
-		}
-
-		// If no mismatch is found, return fail(-1)
-		return -1
-	}
+	let originalPosition
 
 	const handleDndConsider = (e) => {
+		if (e.detail.info.trigger === TRIGGERS.DRAG_STARTED)
+			originalPosition = findIndex(propEq(SHADOW_PLACEHOLDER_ITEM_ID, 'id'), e.detail.items)
+
 		bookmarks.children = e.detail.items
 
 		// Ensure dragging is stopped on drag finish via keyboard
@@ -37,22 +29,20 @@
 	}
 
 	const handleDndFinalize = (e) => {
+		bookmarks.children = e.detail.items
 		if (e.detail.info.source === SOURCES.POINTER) dragDisabled = true
 		if (e.detail.info.trigger === TRIGGERS.DROPPED_INTO_ANOTHER) return
 
-		const index = findIndexOfNewItem(originalItems, e.detail.items)
+		const index = findIndex(propEq(e.detail.info.id, 'id'), e.detail.items)
+		const offset = !originalPosition && originalPosition < index ? 1 : 0
 
-		if (index !== -1) {
-			bookmarks.children = e.detail.items
-			dispatch('moveBookmark', [
-				e.detail.info.id,
-				{
-					index,
-					parentId: bookmarks.id,
-				},
-			])
-			originalItems = bookmarks.children
-		}
+		dispatch('moveBookmark', [
+			e.detail.info.id,
+			{
+				index: index + offset,
+				parentId: bookmarks.id,
+			},
+		])
 	}
 
 	const startDrag = (e) => {
