@@ -100,7 +100,7 @@
 							<div class="ml-1 w-4" />
 							<i class="fas fa-xmark h-11 fa-3x aspect-square text-red-200" />
 							<div
-								class="text-gray-900 dark:text-gray-300 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-none"
+								class="text-gray-900 dark:text-gray-300 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-tight"
 							>
 								invalid bookmark
 							</div>
@@ -130,7 +130,7 @@
 
 							<div class="overflow-hidden">
 								<a
-									class="text-gray-900 dark:text-gray-300 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-none"
+									class="text-gray-900 dark:text-gray-300 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-tight"
 									href={bookmark.url}
 									on:click|preventDefault={dispatch('openBookmark', bookmark)}
 								>
