@@ -40,7 +40,7 @@
 
 		<div class="overflow-hidden">
 			<a
-				class="text-gray-900 dark:text-gray-300 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-none"
+				class="text-gray-900 dark:text-gray-300 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium"
 				href={bookmark.url}
 				on:click|preventDefault={dispatch('openBookmark', bookmark)}
 			>
