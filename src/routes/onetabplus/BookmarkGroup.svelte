@@ -7,6 +7,7 @@
 	import { flip } from 'svelte/animate'
 	import { ANIMATION_DURATION } from '$lib/constant'
 	import { dndFreeze } from '$lib/store'
+	import autoAnimate from '@formkit/auto-animate'
 
 	const dispatch = createEventDispatcher()
 
@@ -86,11 +87,12 @@
 			on:consider={handleDndConsider}
 			on:finalize={handleDndFinalize}
 			class="space-y-4"
+			use:autoAnimate={{ duration: ANIMATION_DURATION }}
 		>
 			{#each bookmarks.children as bookmark (bookmark.id)}
 				<!-- <Bookmark {bookmark} on:openBookmark on:removeBookmark />
 				 -->
-				<div animate:flip={{ duration: ANIMATION_DURATION }} class="cursor-default">
+				<div class="cursor-default">
 					{#if isNil(bookmark) || isEmpty(bookmark)}
 						<li
 							class="flex items-center gap-2 rounded-md p-2 bg-white dark:bg-inherit dark:border-gray-300 dark:border"

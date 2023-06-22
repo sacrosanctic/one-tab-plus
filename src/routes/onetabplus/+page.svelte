@@ -1,5 +1,6 @@
 <script>
 	import { ANIMATION_DURATION, APP_NAME } from '$lib/constant'
+	import autoAnimate from '@formkit/auto-animate'
 	import {
 		getAppFolderId,
 		getFavicon,
@@ -147,12 +148,9 @@
 	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-200">
 		{APP_NAME} - {numOfTabs} tabs
 	</h2>
-	<div class="space-y-2">
+	<div class="space-y-2" use:autoAnimate={{ duration: ANIMATION_DURATION }}>
 		{#each bookmarkTree as bookmarks (bookmarks.id)}
-			<div
-				animate:flip={{ duration: ANIMATION_DURATION }}
-				transition:fade={{ duration: ANIMATION_DURATION }}
-			>
+			<div>
 				<BookmarkGroup
 					{bookmarks}
 					on:titleChange={(e) => updateTitle(e.detail)}
