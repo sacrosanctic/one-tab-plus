@@ -11,6 +11,7 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"storybook": "storybook dev -p 6006",
+		"devext": "nodemon --watch src --watch static --exec \"vite build\" -e ts,css,svelte,js",
 		"build-storybook": "storybook build"
 	},
 	"devDependencies": {
@@ -32,6 +33,7 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-storybook": "^0.6.12",
 		"eslint-plugin-svelte": "^2.30.0",
+		"nodemon": "^3.0.3",
 		"postcss": "^8.4.33",
 		"prettier": "^3.2.4",
 		"prettier-plugin-svelte": "^3.1.2",
