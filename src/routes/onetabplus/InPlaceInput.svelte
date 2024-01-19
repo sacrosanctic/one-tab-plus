@@ -30,8 +30,8 @@
 </script>
 
 {#if editing}
-	<form on:submit|preventDefault={submit} on:keydown={cancel} class="inline-block">
-		<input bind:value={title} on:blur={submit} use:focus />
+	<form on:submit|preventDefault={submit} class="inline-block">
+		<input bind:value={title} on:blur={submit} use:focus on:keydown={cancel} />
 	</form>
 {:else}
 	<button type="button" on:click={edit} class="text-left">
