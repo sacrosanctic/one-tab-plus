@@ -48,7 +48,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@formkit/auto-animate": "^0.7.0",
+		"@formkit/auto-animate": "^0.8.1",
 		"@fortawesome/fontawesome-free": "^6.4.0",
 		"ramda": "^0.29.0",
 		"ramda-adjunct": "^4.0.0"
