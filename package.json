@@ -21,7 +21,7 @@
 		"@storybook/blocks": "^7.6.10",
 		"@storybook/svelte": "^7.6.10",
 		"@storybook/sveltekit": "^7.6.10",
-		"@storybook/testing-library": "^0.1.0",
+		"@storybook/test": "^7.6.10",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/chrome": "^0.0.258",
