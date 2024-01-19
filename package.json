@@ -22,7 +22,6 @@
 		"@storybook/svelte": "^7.6.10",
 		"@storybook/sveltekit": "^7.6.10",
 		"@storybook/testing-library": "^0.1.0",
-		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.20.4",
 		"@types/chrome": "^0.0.236",
 		"@types/ramda": "^0.29.2",
