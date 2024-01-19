@@ -92,7 +92,7 @@ devDependencies:
     specifier: ^7.6.10
     version: 7.6.10
   svelte:
-    specifier: ^3.54.0
+    specifier: ^3.59.2
     version: 3.59.2
   svelte-check:
     specifier: ^3.0.1
