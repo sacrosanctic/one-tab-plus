@@ -1,4 +1,4 @@
-import { andThen, assoc, find, forEach, objOf, path, pipe, pluck, propEq, when } from 'ramda'
+import { assoc, find, objOf, path, pipe, propEq } from 'ramda'
 import { APP_FOLDER_NAME, MAIN_PAGE, OTHER_BOOKMARKS_ID } from './constants'
 import type { BookmarkType } from './types'
 
@@ -8,7 +8,7 @@ export const saveCurrentTab = async () => {
 	const { title, url, id } = bookmark
 
 	await chrome.bookmarks.create({ title, url, parentId: await getIntakeBookmark() })
-	chrome.tabs.remove(id)
+	if (id) chrome.tabs.remove(id)
 }
 
 export const getIntakeBookmark = async () => {
@@ -21,19 +21,19 @@ export const getIntakeBookmark = async () => {
 		: (await chrome.bookmarks.create({ title: 'intake', parentId: appFolderId, index: 0 })).id
 }
 
-export const isFolder = (node) => propEq(undefined, 'url', node)
+export const isFolder = (bookmark: BookmarkType) => bookmark.url === undefined
 
 export const getAppFolderId = async () => {
-	const nodes = await chrome.bookmarks.search({ title: APP_FOLDER_NAME })
+	const bookmarks = await chrome.bookmarks.search({ title: APP_FOLDER_NAME })
 
-	if (nodes.length === 0) {
+	if (bookmarks.length === 0) {
 		return (await chrome.bookmarks.create({ title: APP_FOLDER_NAME, parentId: OTHER_BOOKMARKS_ID }))
 			.id
 	} else {
-		if (!isFolder(nodes[0])) {
+		if (!isFolder(bookmarks[0])) {
 			throw Error()
 		}
-		return nodes[0].id
+		return bookmarks[0].id
 	}
 }
 
@@ -48,22 +48,22 @@ export const openTabList = () =>
 
 export const removeBookmark = async (bookmark: BookmarkType) => {
 	await chrome.bookmarks.remove(bookmark.id)
-	await deleteEmptyFolder(bookmark.parentId)
+	await deleteEmptyFolder(bookmark.parentId!)
 }
 
-export const openBookmark = async (bookmark) => {
+export const openBookmark = async (bookmark: BookmarkType) => {
 	await chrome.tabs.create({ active: false, url: bookmark.url })
 	removeBookmark(bookmark)
 }
 
-export const moveBookmark = async (id, obj) => {
+export const moveBookmark = async (id: string, obj: { parentId: string; index: number }) => {
 	const bookmark = await chrome.bookmarks.get(id)
-	const parentId = path([0, 'parentId'], bookmark)
+	const parentId = path([0, 'parentId'], bookmark)!
 
 	await chrome.bookmarks.move(id, obj)
 	await deleteEmptyFolder(parentId)
 }
-export const openAllTabs = async (id) => {
+export const openAllTabs = async (id: string) => {
 	const children = await chrome.bookmarks.getChildren(id)
 
 	for (const child of children) {
@@ -73,24 +73,18 @@ export const openAllTabs = async (id) => {
 	await deleteEmptyFolder(id)
 }
 
-export const deleteEmptyFolder = async (id) => {
-	await pipe(
-		() => chrome.bookmarks.getChildren(id),
-		andThen(
-			when(
-				//
-				propEq(0, 'length'),
-				() => chrome.bookmarks.remove(id),
-			),
-		),
-	)()
+export const deleteEmptyFolder = async (id: string) => {
+	const children = await chrome.bookmarks.getChildren(id)
+	if (!children.length) chrome.bookmarks.remove(id)
 }
 
-export const onBookmarkChange = (handler) =>
-	forEach(
-		(event) => chrome.bookmarks[event].addListener(handler),
-		['onCreated', 'onChanged', 'onMoved', 'onRemoved', 'onChildrenReordered'],
-	)
+export const onBookmarkChange = (handler: () => void) => {
+	const events = ['onCreated', 'onChanged', 'onMoved', 'onRemoved', 'onChildrenReordered'] as const
+
+	events.forEach((event) => {
+		chrome.bookmarks[event].addListener(handler)
+	})
+}
 
 export const saveAllTabs = async () => {
 	let allTabs = await chrome.tabs.query({
@@ -100,7 +94,7 @@ export const saveAllTabs = async () => {
 	})
 	const extensionUrl = chrome.runtime.getURL('/')
 
-	allTabs = allTabs.filter((tab) => !tab.url.startsWith(extensionUrl))
+	allTabs = allTabs.filter((tab) => !tab.url?.startsWith(extensionUrl))
 	allTabs = allTabs.sort((a, b) => b.index - a.index)
 
 	const date = Intl.DateTimeFormat('en-US', {
@@ -121,12 +115,13 @@ export const saveAllTabs = async () => {
 	}
 	//prevent window from closing by opening a new tab
 	await chrome.tabs.create({ active: false, url: 'chrome://newtab' })
-	chrome.tabs.remove(pluck('id', allTabs))
+
+	chrome.tabs.remove(allTabs.map((tab) => tab.id).filter(Boolean))
 }
 
-export const getFavicon = (u) => {
+export const getFavicon = (pageUrl: string) => {
 	const url = new URL(chrome.runtime.getURL('/_favicon/'))
-	url.searchParams.set('pageUrl', u)
+	url.searchParams.set('pageUrl', pageUrl)
 	url.searchParams.set('size', '64')
 	return url.toString()
 }
@@ -137,7 +132,7 @@ export const getFavicon = (u) => {
  *
  * defines an event on action button left click
  */
-export const onActionLeftClick = (action) => {
+export const onActionLeftClick = (action: string) => {
 	switch (action) {
 		case 'saveCurrentTab':
 			chrome.action.onClicked.addListener(saveCurrentTab)
@@ -164,17 +159,15 @@ export const onActionRightClick = () => {
 			id: 'openSidePanel',
 		},
 	]
-	forEach(
-		(menu) =>
-			chrome.contextMenus.create({
-				...menu,
-				contexts: ['action'],
-			}),
-		menus,
+	menus.forEach((menu) =>
+		chrome.contextMenus.create({
+			...menu,
+			contexts: ['action'],
+		}),
 	)
 
 	// listen for right clicks for toolbar icon
-	chrome.contextMenus.onClicked.addListener(async (e) => {
+	chrome.contextMenus.onClicked.addListener((e) => {
 		switch (e.menuItemId) {
 			case 'openTab':
 				openTabList()

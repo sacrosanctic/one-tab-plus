@@ -49,6 +49,9 @@ devDependencies:
   '@sveltejs/vite-plugin-svelte':
     specifier: ^3.0.0
     version: 3.0.1(svelte@5.0.0-next.37)(vite@5.0.11)
+  '@total-typescript/ts-reset':
+    specifier: ^0.5.1
+    version: 0.5.1
   '@types/chrome':
     specifier: ^0.0.258
     version: 0.0.258
@@ -3657,6 +3660,10 @@ packages:
       '@testing-library/dom': '>=7.21.4'
     dependencies:
       '@testing-library/dom': 9.3.4
+    dev: true
+
+  /@total-typescript/ts-reset@0.5.1:
+    resolution: {integrity: sha512-AqlrT8YA1o7Ff5wPfMOL0pvL+1X+sw60NN6CcOCqs658emD6RfiXhF7Gu9QcfKBH7ELY2nInLhKSCWVoNL70MQ==}
     dev: true
 
   /@types/aria-query@5.0.3:
