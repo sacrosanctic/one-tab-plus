@@ -1,6 +1,9 @@
 import { assoc, objOf, path, pipe } from 'ramda'
 import { APP_FOLDER_NAME, BOOKMARK_NAMES, MAIN_PAGE, OTHER_BOOKMARKS_ID } from './constants'
 import type { BookmarkType } from './types'
+import { type SortableOptions } from 'sortablejs'
+import sortablejs from 'sortablejs'
+import type { Action } from 'svelte/action'
 
 export const saveCurrentTab = async () => {
 	const bookmarks = await chrome.tabs.query({ active: true, currentWindow: true })
@@ -197,4 +200,11 @@ export const onActionRightClick = () => {
 				break
 		}
 	})
+}
+
+export const addSortable: Action<HTMLElement, SortableOptions | undefined> = (el, options = {}) => {
+	const sortable = sortablejs.create(el, options)
+	return {
+		destroy: () => sortable.destroy(),
+	}
 }

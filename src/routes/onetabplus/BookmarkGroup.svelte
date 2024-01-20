@@ -1,9 +1,6 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition'
 	import InPlaceInput from './InPlaceInput.svelte'
-	import { ANIMATION_DURATION } from '$lib/constants'
-	import autoAnimate from '@formkit/auto-animate'
-	import { openAllTabs } from '$lib/utils'
+	import { addSortable, openAllTabs } from '$lib/utils'
 	import type { BookmarkType } from '$lib/types'
 	import Bookmark from './Bookmark.svelte'
 
@@ -24,7 +21,10 @@
 		>
 
 		<section class="text-gray-500 text-lg dark:text-gray-400 w-full">
-			<ul class="space-y-2">
+			<ul
+				class="space-y-2 min-h-16"
+				use:addSortable={{ group: 'same' }}
+			>
 				{#each children as bookmark (bookmark.id)}
 					<Bookmark {bookmark} />
 				{/each}
@@ -32,9 +32,3 @@
 		</section>
 	</div>
 {/await}
-
-<style lang="postcss">
-	li:hover button {
-		@apply opacity-100;
-	}
-</style>

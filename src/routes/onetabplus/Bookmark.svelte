@@ -17,9 +17,9 @@
 	}
 </script>
 
-<div class="cursor-default">
+<li class="cursor-default">
 	{#if bookmark.url === ''}
-		<li
+		<div
 			class="flex items-center gap-2 rounded-md p-2 bg-white dark:bg-inherit dark:border-gray-300 dark:border"
 		>
 			<div class="ml-1 w-4" />
@@ -29,9 +29,9 @@
 			>
 				invalid bookmark
 			</div>
-		</li>
+		</div>
 	{:else}
-		<li
+		<div
 			title={bookmark.url}
 			class="flex items-center gap-2 rounded-md p-2 bg-white dark:border-gray-300 dark:bg-inherit dark:border"
 		>
@@ -42,12 +42,12 @@
 				<i class="fas fa-xmark fa-lg text-gray-400" />
 			</button>
 			<button
-				class="h-9 aspect-square"
+				class="h-9 aspect-square my-handle"
 				aria-label="drag-handle"
 			>
 				<img
 					class="w-full"
-					src={getFavicon(bookmark.url)}
+					src={getFavicon(bookmark.url!)}
 					alt="favicon"
 				/>
 			</button>
@@ -68,6 +68,12 @@
 					{formatDate(bookmark.dateAdded)}
 				</p>
 			</div>
-		</li>
+		</div>
 	{/if}
-</div>
+</li>
+
+<style lang="postcss">
+	li:hover button {
+		@apply opacity-100;
+	}
+</style>

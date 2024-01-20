@@ -11,12 +11,18 @@ dependencies:
   '@fortawesome/fontawesome-free':
     specifier: ^6.4.0
     version: 6.4.2
+  '@types/sortablejs':
+    specifier: ^1.15.7
+    version: 1.15.7
   ramda:
     specifier: ^0.29.0
     version: 0.29.1
   ramda-adjunct:
     specifier: ^4.0.0
     version: 4.1.1(ramda@0.29.1)
+  sortablejs:
+    specifier: ^1.15.2
+    version: 1.15.2
 
 devDependencies:
   '@faker-js/faker':
@@ -3918,6 +3924,10 @@ packages:
       '@types/mime': 3.0.3
       '@types/node': 20.8.10
     dev: true
+
+  /@types/sortablejs@1.15.7:
+    resolution: {integrity: sha512-PvgWCx1Lbgm88FdQ6S7OGvLIjWS66mudKPlfdrWil0TjsO5zmoZmzoKiiwRShs1dwPgrlkr0N4ewuy0/+QUXYQ==}
+    dev: false
 
   /@types/unist@2.0.9:
     resolution: {integrity: sha512-zC0iXxAv1C1ERURduJueYzkzZ2zaGyc+P2c95hgkikHPr3z8EdUZOlgEQ5X0DRmwDZn+hekycQnoeiiRVrmilQ==}
@@ -8271,6 +8281,10 @@ packages:
       minimist: 1.2.8
       sander: 0.5.1
     dev: true
+
+  /sortablejs@1.15.2:
+    resolution: {integrity: sha512-FJF5jgdfvoKn1MAKSdGs33bIqLi3LmsgVTliuX6iITj834F+JRQZN90Z93yql8h0K2t0RwDPBmxwlbZfDcxNZA==}
+    dev: false
 
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
