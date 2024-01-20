@@ -18,9 +18,14 @@
 		original = value
 	}}
 	onkeydown={(e) => {
-		if (e.key !== 'Escape') return
+		if (e.key === 'Enter') {
+			e.preventDefault()
+			e.currentTarget.blur()
+		}
 
-		e.preventDefault()
-		value = original
+		if (e.key === 'Escape') {
+			e.preventDefault()
+			value = original
+		}
 	}}
 />
