@@ -34,10 +34,17 @@
 		title={bookmark.url}
 		class="flex items-center gap-2 rounded-md p-2 bg-white dark:border-gray-300 dark:bg-inherit dark:border"
 	>
-		<button class="w-4 opacity-0" on:click={() => dispatch('removeBookmark', bookmark)}>
+		<button
+			class="w-4 opacity-0"
+			on:click={() => dispatch('removeBookmark', bookmark)}
+		>
 			<i class="fas fa-xmark fa-lg text-gray-400" />
 		</button>
-		<img class="h-9 aspect-square" src={bookmark.favicon} alt="favicon" />
+		<img
+			class="h-9 aspect-square"
+			src={bookmark.favicon}
+			alt="favicon"
+		/>
 
 		<div class="overflow-hidden">
 			<a

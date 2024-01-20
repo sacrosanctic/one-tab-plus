@@ -74,15 +74,31 @@
 </svelte:head>
 
 <main class="m-2">
-	<button type="button" class="btn" on:click={saveAllTabs}>get all tabs</button>
-	<button class="btn" type="button" on:click={openTabList}>
+	<button
+		type="button"
+		class="btn"
+		on:click={saveAllTabs}>get all tabs</button
+	>
+	<button
+		class="btn"
+		type="button"
+		on:click={openTabList}
+	>
 		<i class="fas fa-up-right-from-square" />
 	</button>
-	<button class="btn" type="button" on:click={() => sortBookmark([ascend(prop('dateAdded'))])}>
+	<button
+		class="btn"
+		type="button"
+		on:click={() => sortBookmark([ascend(prop('dateAdded'))])}
+	>
 		<i class="fas fa-arrow-down-long" />
 		<i class="fas fa-calendar" />
 	</button>
-	<button class="btn" type="button" on:click={() => sortBookmark([descend(prop('dateAdded'))])}>
+	<button
+		class="btn"
+		type="button"
+		on:click={() => sortBookmark([descend(prop('dateAdded'))])}
+	>
 		<i class="fas fa-arrow-up-long" />
 		<i class="fas fa-calendar" />
 	</button>
@@ -98,13 +114,20 @@
 		<i class="fas fa-arrow-down-long" />
 		<i class="fas fa-house" />
 	</button>
-	<button class="btn" type="button" on:click={reset}>
+	<button
+		class="btn"
+		type="button"
+		on:click={reset}
+	>
 		<i class="fas fa-filter-circle-xmark" />
 	</button>
 	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-200">
 		{APP_NAME} - {numOfTabs} tabs
 	</h2>
-	<div class="space-y-2" use:autoAnimate={{ duration: ANIMATION_DURATION }}>
+	<div
+		class="space-y-2"
+		use:autoAnimate={{ duration: ANIMATION_DURATION }}
+	>
 		{#each data.bookmarks as bookmarks (bookmarks.id)}
 			<div>
 				<BookmarkGroup

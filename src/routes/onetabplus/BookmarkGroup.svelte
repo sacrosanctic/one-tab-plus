@@ -24,11 +24,21 @@
 {#await chrome.bookmarks.getChildren(bookmarks.id) then children}
 	<div transition:fade={{ duration: ANIMATION_DURATION }}>
 		<h2 class="text-lg text-gray-500 dark:text-white font-semibold capitalize">
-			<InPlaceInput on:titleChange id={bookmarks.id} title={bookmarks.title} /> tabs
+			<InPlaceInput
+				on:titleChange
+				id={bookmarks.id}
+				title={bookmarks.title}
+			/> tabs
 		</h2>
-		<button class="text-sm" on:click={() => dispatch('openAllTabs', bookmarks.id)}>Open All</button>
+		<button
+			class="text-sm"
+			on:click={() => dispatch('openAllTabs', bookmarks.id)}>Open All</button
+		>
 		<section class="text-gray-500 text-lg dark:text-gray-400 w-full sm:w-4/6">
-			<ul class="space-y-4" use:autoAnimate={{ duration: ANIMATION_DURATION }}>
+			<ul
+				class="space-y-4"
+				use:autoAnimate={{ duration: ANIMATION_DURATION }}
+			>
 				{#each children as bookmark (bookmark.id)}
 					<div class="cursor-default">
 						{#if isNil(bookmark) || isEmpty(bookmark)}
@@ -48,11 +58,21 @@
 								title={bookmark.url}
 								class="flex items-center gap-2 rounded-md p-2 bg-white dark:border-gray-300 dark:bg-inherit dark:border"
 							>
-								<button class="w-4 opacity-0" on:click={() => dispatch('removeBookmark', bookmark)}>
+								<button
+									class="w-4 opacity-0"
+									on:click={() => dispatch('removeBookmark', bookmark)}
+								>
 									<i class="fas fa-xmark fa-lg text-gray-400" />
 								</button>
-								<button class="h-9 aspect-square" aria-label="drag-handle">
-									<img class="w-full" src={getFavicon(bookmark.url)} alt="favicon" />
+								<button
+									class="h-9 aspect-square"
+									aria-label="drag-handle"
+								>
+									<img
+										class="w-full"
+										src={getFavicon(bookmark.url)}
+										alt="favicon"
+									/>
 								</button>
 
 								<div class="overflow-hidden">
