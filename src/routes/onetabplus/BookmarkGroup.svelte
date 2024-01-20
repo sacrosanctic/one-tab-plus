@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { createEventDispatcher } from 'svelte'
 	import { fade } from 'svelte/transition'
 	import InPlaceInput from './InPlaceInput.svelte'
@@ -6,12 +6,13 @@
 	import { ANIMATION_DURATION } from '$lib/constant'
 	import autoAnimate from '@formkit/auto-animate'
 	import { getFavicon } from '$lib/util'
+	import type { Bookmark } from '$lib/types'
 
 	const dispatch = createEventDispatcher()
 
-	export let bookmarks = {}
+	export let bookmarks: Bookmark
 
-	const formatDate = (date) =>
+	const formatDate = (date: number) =>
 		new Intl.DateTimeFormat('en-US', {
 			year: 'numeric',
 			month: 'numeric',
@@ -85,7 +86,7 @@
 									</a>
 									<p class="font-medium text-xs mt-1">
 										<i class="far fa-calendar mr-1" />
-										{formatDate(bookmark.dateAdded)}
+										{bookmark.dateAdded ? formatDate(bookmark.dateAdded) : 'no date'}
 									</p>
 								</div>
 							</li>
