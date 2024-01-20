@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { ANIMATION_DURATION, APP_NAME } from '$lib/constants'
-	import autoAnimate from '@formkit/auto-animate'
-	import { moveBookmark, openBookmark, openTabList, removeBookmark, saveAllTabs } from '$lib/utils'
+	import { APP_NAME } from '$lib/constants'
+	import { openTabList, saveAllTabs } from '$lib/utils'
 
 	import BookmarkGroup from './BookmarkGroup.svelte'
 
@@ -55,18 +54,16 @@
 	<h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-200">
 		{APP_NAME} tabs
 	</h2>
-	<div
-		class="space-y-2"
-		use:autoAnimate={{ duration: ANIMATION_DURATION }}
-	>
-		{#each data.bookmarks as bookmarks (bookmarks.id)}
-			<div>
-				<BookmarkGroup
-					{bookmarks}
-					on:openBookmark={(e) => openBookmark(e.detail)}
-					on:removeBookmark={(e) => removeBookmark(e.detail)}
-				/>
-			</div>
-		{/each}
+	<div class="grid grid-cols-2 gap-2">
+		<div>
+			{#each data.bookmarks as bookmarks (bookmarks.id)}
+				<BookmarkGroup {bookmarks} />
+			{/each}
+		</div>
+		<div>
+			{#each data.bookmarks as bookmarks (bookmarks.id)}
+				<BookmarkGroup {bookmarks} />
+			{/each}
+		</div>
 	</div>
 </main>
