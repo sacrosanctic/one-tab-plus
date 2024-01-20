@@ -7,7 +7,7 @@
 	const formatDate = (date: number | undefined) => {
 		if (!date) return 'no date'
 
-		new Intl.DateTimeFormat('en-US', {
+		return new Intl.DateTimeFormat('en-US', {
 			year: 'numeric',
 			month: 'numeric',
 			day: 'numeric',
