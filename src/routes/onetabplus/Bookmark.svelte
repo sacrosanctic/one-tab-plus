@@ -33,7 +33,7 @@
 		title={bookmark.url}
 		class="flex items-center gap-2 rounded-md p-2 bg-white dark:border-gray-300 dark:bg-inherit dark:border"
 	>
-		<button class="w-4 opacity-0" on:click={dispatch('removeBookmark', bookmark)}>
+		<button class="w-4 opacity-0" on:click={() => dispatch('removeBookmark', bookmark)}>
 			<i class="fas fa-xmark fa-lg text-gray-400" />
 		</button>
 		<img class="h-9 aspect-square" src={bookmark.favicon} alt="favicon" />
@@ -42,7 +42,7 @@
 			<a
 				class="text-gray-900 dark:text-gray-300 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium"
 				href={bookmark.url}
-				on:click|preventDefault={dispatch('openBookmark', bookmark)}
+				on:click|preventDefault={() => dispatch('openBookmark', bookmark)}
 			>
 				{bookmark.title}
 			</a>

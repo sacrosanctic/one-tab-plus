@@ -76,7 +76,7 @@
 		<InPlaceInput on:titleChange id={bookmarks.id} title={bookmarks.title} /> - {bookmarks.children
 			.length} tabs
 	</h2>
-	<button class="text-sm" on:click={dispatch('openAllTabs', bookmarks.id)}>Open All</button>
+	<button class="text-sm" on:click={() => dispatch('openAllTabs', bookmarks.id)}>Open All</button>
 	<section class="text-gray-500 text-lg dark:text-gray-400 w-full sm:w-4/6">
 		<ul
 			use:dndzone={{
@@ -110,7 +110,7 @@
 							title={bookmark.url}
 							class="flex items-center gap-2 rounded-md p-2 bg-white dark:border-gray-300 dark:bg-inherit dark:border"
 						>
-							<button class="w-4 opacity-0" on:click={dispatch('removeBookmark', bookmark)}>
+							<button class="w-4 opacity-0" on:click={() => dispatch('removeBookmark', bookmark)}>
 								<i class="fas fa-xmark fa-lg text-gray-400" />
 							</button>
 							<button
@@ -132,7 +132,7 @@
 								<a
 									class="text-gray-900 dark:text-gray-300 block whitespace-nowrap overflow-hidden text-ellipsis w-full max-w-lg capitalize font-medium leading-tight"
 									href={bookmark.url}
-									on:click|preventDefault={dispatch('openBookmark', bookmark)}
+									on:click|preventDefault={() => dispatch('openBookmark', bookmark)}
 								>
 									{bookmark.title}
 								</a>
