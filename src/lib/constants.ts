@@ -10,4 +10,4 @@ export const ANIMATION_DURATION = 200
 export const BOOKMARK_NAMES = {
 	INTAKE: 'intake',
 	YOUTUBE: 'youtube',
-}
+} as const

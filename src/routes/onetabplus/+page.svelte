@@ -56,12 +56,15 @@
 	</h2>
 	<div class="grid grid-cols-2 gap-2">
 		<div>
-			{#each data.bookmarks as bookmarks (bookmarks.id)}
+			{#each data.bookmarks.other as bookmarks (bookmarks.id)}
 				<BookmarkGroup {bookmarks} />
 			{/each}
 		</div>
 		<div>
-			{#each data.bookmarks as bookmarks (bookmarks.id)}
+			{#each data.bookmarks.intake as bookmarks (bookmarks.id)}
+				<BookmarkGroup {bookmarks} />
+			{/each}
+			{#each data.bookmarks.youtube as bookmarks (bookmarks.id)}
 				<BookmarkGroup {bookmarks} />
 			{/each}
 		</div>
