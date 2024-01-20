@@ -56,7 +56,7 @@
 			</a>
 			<p class="font-medium text-xs mt-1">
 				<i class="far fa-calendar mr-1" />
-				{formatDate(bookmark.dateAdded)}
+				{bookmark.dateAdded ? formatDate(bookmark.dateAdded) : 'no date'}
 			</p>
 		</div>
 	</li>
