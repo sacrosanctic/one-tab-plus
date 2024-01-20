@@ -130,8 +130,6 @@ export const getFavicon = (u) => {
 	return url.toString()
 }
 
-export const updateTitle = ({ id, title }) => chrome.bookmarks.update(id, { title })
-
 /**
  *
  * @param {*} action

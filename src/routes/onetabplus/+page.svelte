@@ -8,7 +8,6 @@
 		openTabList,
 		removeBookmark,
 		saveAllTabs,
-		updateTitle,
 	} from '$lib/util'
 
 	import BookmarkGroup from './BookmarkGroup.svelte'
@@ -71,7 +70,6 @@
 			<div>
 				<BookmarkGroup
 					{bookmarks}
-					on:titleChange={(e) => updateTitle(e.detail)}
 					on:openBookmark={(e) => openBookmark(e.detail)}
 					on:removeBookmark={(e) => removeBookmark(e.detail)}
 					on:moveBookmark={(e) => moveBookmark(...e.detail)}

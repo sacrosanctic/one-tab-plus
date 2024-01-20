@@ -26,8 +26,7 @@
 	<div transition:fade={{ duration: ANIMATION_DURATION }}>
 		<h2 class="text-lg text-gray-500 dark:text-white font-semibold capitalize">
 			<InPlaceInput
-				on:titleChange
-				id={bookmarks.id}
+				onChange={(title) => chrome.bookmarks.update(bookmarks.id, { title })}
 				title={bookmarks.title}
 			/> tabs
 		</h2>
