@@ -1,14 +1,7 @@
 <script lang="ts">
 	import { ANIMATION_DURATION, APP_NAME } from '$lib/constant'
 	import autoAnimate from '@formkit/auto-animate'
-	import {
-		moveBookmark,
-		openAllTabs,
-		openBookmark,
-		openTabList,
-		removeBookmark,
-		saveAllTabs,
-	} from '$lib/util'
+	import { moveBookmark, openBookmark, openTabList, removeBookmark, saveAllTabs } from '$lib/util'
 
 	import BookmarkGroup from './BookmarkGroup.svelte'
 
@@ -73,7 +66,6 @@
 					on:openBookmark={(e) => openBookmark(e.detail)}
 					on:removeBookmark={(e) => removeBookmark(e.detail)}
 					on:moveBookmark={(e) => moveBookmark(...e.detail)}
-					on:openAllTabs={(e) => openAllTabs(e.detail)}
 				/>
 			</div>
 		{/each}

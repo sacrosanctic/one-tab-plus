@@ -5,7 +5,7 @@
 	import { isEmpty, isNil } from 'ramda'
 	import { ANIMATION_DURATION } from '$lib/constant'
 	import autoAnimate from '@formkit/auto-animate'
-	import { getFavicon } from '$lib/util'
+	import { getFavicon, openAllTabs } from '$lib/util'
 	import type { Bookmark } from '$lib/types'
 
 	const dispatch = createEventDispatcher()
@@ -32,8 +32,9 @@
 		</h2>
 		<button
 			class="text-sm"
-			on:click={() => dispatch('openAllTabs', bookmarks.id)}>Open All</button
+			on:click={() => openAllTabs(bookmarks.id)}>Open All</button
 		>
+
 		<section class="text-gray-500 text-lg dark:text-gray-400 w-full sm:w-4/6">
 			<ul
 				class="space-y-4"
