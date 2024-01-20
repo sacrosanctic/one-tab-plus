@@ -1,10 +1,36 @@
 <script lang="ts">
-	import { APP_NAME } from '$lib/constants'
-	import { openTabList, saveAllTabs } from '$lib/utils'
+	import { APP_NAME, BOOKMARK_NAMES } from '$lib/constants'
+	import { getAppFolderId, isFolder, openTabList, saveAllTabs } from '$lib/utils'
+	import { filter } from 'ramda'
 
 	import BookmarkGroup from './BookmarkGroup.svelte'
+	import { browser } from '$app/environment'
 
-	export let data
+	const loadBookmarks = async () => {
+		return await getAppFolderId()
+			.then(chrome.bookmarks.getChildren)
+			.then(filter(isFolder))
+			.then((bookmarks) => {
+				let bookmarkGroups: Record<
+					'intake' | 'youtube' | 'other',
+					chrome.bookmarks.BookmarkTreeNode[]
+				> = {
+					intake: [],
+					youtube: [],
+					other: [],
+				}
+
+				bookmarks.forEach((bookmark) => {
+					if (bookmark.title === BOOKMARK_NAMES.INTAKE)
+						bookmarkGroups[BOOKMARK_NAMES.INTAKE].push(bookmark)
+					else if (bookmark.title === BOOKMARK_NAMES.YOUTUBE)
+						bookmarkGroups[BOOKMARK_NAMES.YOUTUBE].push(bookmark)
+					else bookmarkGroups.other.push(bookmark)
+				})
+
+				return bookmarkGroups
+			})
+	}
 </script>
 
 <svelte:head>
@@ -55,18 +81,22 @@
 		{APP_NAME} tabs
 	</h2>
 	<div class="grid grid-cols-2 gap-2">
-		<div>
-			{#each data.bookmarks.other as bookmarks (bookmarks.id)}
-				<BookmarkGroup {bookmarks} />
-			{/each}
-		</div>
-		<div class="space-y-2">
-			{#each data.bookmarks.intake as bookmarks (bookmarks.id)}
-				<BookmarkGroup {bookmarks} />
-			{/each}
-			{#each data.bookmarks.youtube as bookmarks (bookmarks.id)}
-				<BookmarkGroup {bookmarks} />
-			{/each}
-		</div>
+		{#if browser}
+			{#await loadBookmarks() then asdf}
+				<div>
+					{#each asdf.other as bookmarks (bookmarks.id)}
+						<BookmarkGroup {bookmarks} />
+					{/each}
+				</div>
+				<div class="space-y-2">
+					{#each asdf.intake as bookmarks (bookmarks.id)}
+						<BookmarkGroup {bookmarks} />
+					{/each}
+					{#each asdf.youtube as bookmarks (bookmarks.id)}
+						<BookmarkGroup {bookmarks} />
+					{/each}
+				</div>
+			{/await}
+		{/if}
 	</div>
 </main>
