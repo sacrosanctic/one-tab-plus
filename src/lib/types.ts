@@ -1,1 +1,1 @@
-export type Bookmark = chrome.bookmarks.BookmarkTreeNode
+export type BookmarkType = chrome.bookmarks.BookmarkTreeNode

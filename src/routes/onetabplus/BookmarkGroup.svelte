@@ -6,11 +6,11 @@
 	import { ANIMATION_DURATION } from '$lib/constant'
 	import autoAnimate from '@formkit/auto-animate'
 	import { getFavicon, openAllTabs } from '$lib/util'
-	import type { Bookmark } from '$lib/types'
+	import type { BookmarkType } from '$lib/types'
 
 	const dispatch = createEventDispatcher()
 
-	export let bookmarks: Bookmark
+	export let bookmarks: BookmarkType
 
 	const formatDate = (date: number) =>
 		new Intl.DateTimeFormat('en-US', {
