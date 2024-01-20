@@ -1,24 +1,40 @@
-import { assoc, find, objOf, path, pipe, propEq } from 'ramda'
-import { APP_FOLDER_NAME, MAIN_PAGE, OTHER_BOOKMARKS_ID } from './constants'
+import { assoc, objOf, path, pipe } from 'ramda'
+import { APP_FOLDER_NAME, BOOKMARK_NAMES, MAIN_PAGE, OTHER_BOOKMARKS_ID } from './constants'
 import type { BookmarkType } from './types'
 
 export const saveCurrentTab = async () => {
-	const nodes = await chrome.tabs.query({ active: true, currentWindow: true })
-	const bookmark = nodes[0]
+	const bookmarks = await chrome.tabs.query({ active: true, currentWindow: true })
+	const bookmark = bookmarks[0]
 	const { title, url, id } = bookmark
 
-	await chrome.bookmarks.create({ title, url, parentId: await getIntakeBookmark() })
+	const isYoutube = (url: string) => new URL(url).origin === 'https://www.youtube.com'
+
+	const parentId = await getBookmarkIdByTitle(
+		isYoutube(url!) ? BOOKMARK_NAMES.YOUTUBE : BOOKMARK_NAMES.INTAKE,
+	)
+
+	await chrome.bookmarks.create({
+		title,
+		url,
+		parentId,
+	})
+
 	if (id) chrome.tabs.remove(id)
 }
 
-export const getIntakeBookmark = async () => {
+export const getBookmarkIdByTitle = async (title: string) => {
 	const appFolderId = await getAppFolderId()
 	const children = await chrome.bookmarks.getChildren(appFolderId)
-	const bookmark = find(propEq('intake', 'title'), children)
+	const bookmark = children.find((child) => child.title === title)
 
-	return bookmark
-		? bookmark.id
-		: (await chrome.bookmarks.create({ title: 'intake', parentId: appFolderId, index: 0 })).id
+	if (bookmark) return bookmark.id
+
+	const { id } = await chrome.bookmarks.create({
+		title,
+		parentId: appFolderId,
+		index: 0,
+	})
+	return id
 }
 
 export const isFolder = (bookmark: BookmarkType) => bookmark.url === undefined
@@ -27,14 +43,15 @@ export const getAppFolderId = async () => {
 	const bookmarks = await chrome.bookmarks.search({ title: APP_FOLDER_NAME })
 
 	if (bookmarks.length === 0) {
-		return (await chrome.bookmarks.create({ title: APP_FOLDER_NAME, parentId: OTHER_BOOKMARKS_ID }))
-			.id
-	} else {
-		if (!isFolder(bookmarks[0])) {
-			throw Error()
-		}
-		return bookmarks[0].id
+		const { id } = await chrome.bookmarks.create({
+			title: APP_FOLDER_NAME,
+			parentId: OTHER_BOOKMARKS_ID,
+		})
+		return id
 	}
+	if (!isFolder(bookmarks[0])) throw Error()
+
+	return bookmarks[0].id
 }
 
 export const openTabList = () =>
