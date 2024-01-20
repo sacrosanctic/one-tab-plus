@@ -35,10 +35,7 @@
 		useWith,
 	} from 'ramda'
 	import { onMount } from 'svelte'
-	import { flip } from 'svelte/animate'
 	import BookmarkGroup from './BookmarkGroup.svelte'
-	import { dndFreeze } from '$lib/store'
-	import { fade } from 'svelte/transition'
 
 	let bookmarkTree = []
 
@@ -70,7 +67,6 @@
 			}
 		}
 		bookmarkTree = temp
-		$dndFreeze = false
 	}
 
 	$: numOfTabs = reduce(
@@ -88,7 +84,6 @@
 	})
 
 	const reset = () => {
-		$dndFreeze = true
 		loadBookmarks()
 	}
 
@@ -109,7 +104,6 @@
 			}),
 			of(Array),
 		)(bookmarkTree)
-		$dndFreeze = true
 	}
 </script>
 

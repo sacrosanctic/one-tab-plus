@@ -100,9 +100,6 @@ devDependencies:
   svelte-check:
     specifier: ^3.4.3
     version: 3.6.2(@babel/core@7.23.2)(postcss@8.4.33)(svelte@5.0.0-next.37)
-  svelte-dnd-action:
-    specifier: ^0.9.22
-    version: 0.9.31(svelte@5.0.0-next.37)
   sveltekit-adapter-chrome-extension:
     specifier: ^2.0.0
     version: 2.0.0(@sveltejs/adapter-static@2.0.3)
@@ -8473,14 +8470,6 @@ packages:
       - sass
       - stylus
       - sugarss
-    dev: true
-
-  /svelte-dnd-action@0.9.31(svelte@5.0.0-next.37):
-    resolution: {integrity: sha512-rUracVJOQkh1g5mCF4TM/IM4f41eUFoNAcO2ctCY4czKyprmPSQipe64vhp+OptWwtw7t8dflD7IIPHvjCwpmQ==}
-    peerDependencies:
-      svelte: '>=3.23.0'
-    dependencies:
-      svelte: 5.0.0-next.37
     dev: true
 
   /svelte-eslint-parser@0.33.1(svelte@5.0.0-next.37):
