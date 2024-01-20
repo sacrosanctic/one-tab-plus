@@ -11,7 +11,7 @@
 </script>
 
 {#await chrome.bookmarks.getChildren(bookmarks.id) then children}
-	<div transition:fade={{ duration: ANIMATION_DURATION }}>
+	<div>
 		<h2 class="text-lg text-gray-500 dark:text-white font-semibold capitalize">
 			<InPlaceInput
 				onChange={(title) => chrome.bookmarks.update(bookmarks.id, { title })}
@@ -24,10 +24,7 @@
 		>
 
 		<section class="text-gray-500 text-lg dark:text-gray-400 w-full">
-			<ul
-				class="space-y-4"
-				use:autoAnimate={{ duration: ANIMATION_DURATION }}
-			>
+			<ul class="space-y-2">
 				{#each children as bookmark (bookmark.id)}
 					<Bookmark {bookmark} />
 				{/each}

@@ -60,7 +60,7 @@
 				<BookmarkGroup {bookmarks} />
 			{/each}
 		</div>
-		<div>
+		<div class="space-y-2">
 			{#each data.bookmarks.intake as bookmarks (bookmarks.id)}
 				<BookmarkGroup {bookmarks} />
 			{/each}
