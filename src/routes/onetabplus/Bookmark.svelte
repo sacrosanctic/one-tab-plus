@@ -1,12 +1,13 @@
-<script>
+<script lang="ts">
+	import type { Bookmark } from '$lib/types'
 	import { isEmpty, isNil } from 'ramda'
 	import { createEventDispatcher } from 'svelte'
 
 	const dispatch = createEventDispatcher()
 
-	export let bookmark = {}
+	export let bookmark: Bookmark & { favicon: string }
 
-	const formatDate = (date) =>
+	const formatDate = (date: number) =>
 		new Intl.DateTimeFormat('en-US', {
 			year: 'numeric',
 			month: 'numeric',
