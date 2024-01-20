@@ -1,5 +1,6 @@
 import { andThen, assoc, find, forEach, objOf, path, pipe, pluck, propEq, when } from 'ramda'
-import { APP_FOLDER_NAME, MAIN_PAGE, OTHER_BOOKMARKS_ID } from './constant'
+import { APP_FOLDER_NAME, MAIN_PAGE, OTHER_BOOKMARKS_ID } from './constants'
+import type { BookmarkType } from './types'
 
 export const saveCurrentTab = async () => {
 	const nodes = await chrome.tabs.query({ active: true, currentWindow: true })
@@ -45,9 +46,9 @@ export const openTabList = () =>
 		chrome.tabs.create,
 	)(MAIN_PAGE)
 
-export const removeBookmark = async ({ id, parentId }) => {
-	await chrome.bookmarks.remove(id)
-	await deleteEmptyFolder(parentId)
+export const removeBookmark = async (bookmark: BookmarkType) => {
+	await chrome.bookmarks.remove(bookmark.id)
+	await deleteEmptyFolder(bookmark.parentId)
 }
 
 export const openBookmark = async (bookmark) => {

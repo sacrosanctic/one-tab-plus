@@ -1,4 +1,4 @@
-import { getAppFolderId, isFolder } from '$lib/util'
+import { getAppFolderId, isFolder } from '$lib/utils'
 import { browser } from '$app/environment'
 import { filter } from 'ramda'
 
