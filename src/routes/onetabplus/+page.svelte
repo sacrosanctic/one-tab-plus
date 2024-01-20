@@ -2,11 +2,7 @@
 	import { ANIMATION_DURATION, APP_NAME } from '$lib/constant'
 	import autoAnimate from '@formkit/auto-animate'
 	import {
-		getAppFolderId,
-		getFavicon,
-		isFolder,
 		moveBookmark,
-		onBookmarkChange,
 		openAllTabs,
 		openBookmark,
 		openTabList,
@@ -20,7 +16,6 @@
 		applySpec,
 		ascend,
 		assoc,
-		converge,
 		descend,
 		flatten,
 		identity,
@@ -37,38 +32,6 @@
 	import { onMount } from 'svelte'
 	import BookmarkGroup from './BookmarkGroup.svelte'
 
-	let bookmarkTree = []
-
-	const loadBookmarks = async () => {
-		const appFolderId = await getAppFolderId()
-		const root = await chrome.bookmarks.getChildren(appFolderId)
-		let temp = []
-
-		for (const bookmark of root) {
-			if (isFolder(bookmark)) {
-				let children = []
-				try {
-					children = await chrome.bookmarks.getChildren(bookmark.id)
-				} catch (error) {
-					// ignore when theres no bookmark
-				}
-				children = map(
-					converge(
-						//
-						assoc('favicon'),
-						[pipe(prop('url'), getFavicon), identity],
-					),
-					children,
-				)
-				temp.push({ ...bookmark, children })
-			} else {
-				// ignore for now
-				// put in a separate folder for processing, maybe user entry via mobile devices
-			}
-		}
-		bookmarkTree = temp
-	}
-
 	$: numOfTabs = reduce(
 		useWith(add, [
 			//
@@ -76,12 +39,9 @@
 			pathOr(0, ['children', 'length']),
 		]),
 		0,
-	)(bookmarkTree)
+	)(data.bookmarks)
 
-	onMount(() => {
-		loadBookmarks()
-		onBookmarkChange(loadBookmarks)
-	})
+	onMount(() => {})
 
 	const reset = () => {
 		loadBookmarks()
@@ -105,6 +65,8 @@
 			of(Array),
 		)(bookmarkTree)
 	}
+
+	export let data
 </script>
 
 <svelte:head>
@@ -143,7 +105,7 @@
 		{APP_NAME} - {numOfTabs} tabs
 	</h2>
 	<div class="space-y-2" use:autoAnimate={{ duration: ANIMATION_DURATION }}>
-		{#each bookmarkTree as bookmarks (bookmarks.id)}
+		{#each data.bookmarks as bookmarks (bookmarks.id)}
 			<div>
 				<BookmarkGroup
 					{bookmarks}
