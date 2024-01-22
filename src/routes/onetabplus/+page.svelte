@@ -1,36 +1,53 @@
 <script lang="ts">
 	import { APP_NAME, BOOKMARK_NAMES } from '$lib/constants'
-	import { getAppFolderId, isFolder, openTabList, saveAllTabs } from '$lib/utils'
+	import {
+		getAppFolderId,
+		getBookmarkIdByTitle,
+		isFolder,
+		openTabList,
+		saveAllTabs,
+	} from '$lib/utils'
 	import { filter } from 'ramda'
 
 	import BookmarkGroup from './BookmarkGroup.svelte'
 	import { browser } from '$app/environment'
+	import type { BookmarkType } from '$lib/types'
 
-	const loadBookmarks = async () => {
-		return await getAppFolderId()
+	let bookmarkGroups: BookmarkType[] = $state([])
+	let intake: BookmarkType[] = $state([])
+	let youtube: BookmarkType[] = $state([])
+
+	const loadRoot = () =>
+		getAppFolderId()
 			.then(chrome.bookmarks.getChildren)
 			.then(filter(isFolder))
 			.then((bookmarks) => {
-				let bookmarkGroups: Record<
-					'intake' | 'youtube' | 'other',
-					chrome.bookmarks.BookmarkTreeNode[]
-				> = {
-					intake: [],
-					youtube: [],
-					other: [],
-				}
-
-				bookmarks.forEach((bookmark) => {
-					if (bookmark.title === BOOKMARK_NAMES.INTAKE)
-						bookmarkGroups[BOOKMARK_NAMES.INTAKE].push(bookmark)
-					else if (bookmark.title === BOOKMARK_NAMES.YOUTUBE)
-						bookmarkGroups[BOOKMARK_NAMES.YOUTUBE].push(bookmark)
-					else bookmarkGroups.other.push(bookmark)
-				})
-
-				return bookmarkGroups
+				return bookmarks.filter(
+					(bookmark) =>
+						![BOOKMARK_NAMES.INTAKE, BOOKMARK_NAMES.YOUTUBE].some((v) => v === bookmark.title),
+				)
 			})
-	}
+
+	$effect(() => {
+		const intakeId = getBookmarkIdByTitle('intake')
+		const youtubeId = getBookmarkIdByTitle('youtube')
+
+		chrome.bookmarks.onCreated.addListener(async (id, bookmark) => {
+			if (bookmark.parentId === (await intakeId)) {
+				intakeId.then(chrome.bookmarks.get).then((data) => (intake = data))
+			}
+
+			if (bookmark.parentId === (await youtubeId)) {
+				youtubeId.then(chrome.bookmarks.get).then((data) => (youtube = data))
+			}
+
+			loadRoot().then((data) => (bookmarkGroups = data))
+		})
+
+		intakeId.then(chrome.bookmarks.get).then((data) => (intake = data))
+		youtubeId.then(chrome.bookmarks.get).then((data) => (youtube = data))
+		loadRoot().then((data) => (bookmarkGroups = data))
+	})
 </script>
 
 <svelte:head>
@@ -82,21 +99,19 @@
 	</h2>
 	<div class="grid grid-cols-2 gap-2">
 		{#if browser}
-			{#await loadBookmarks() then asdf}
-				<div>
-					{#each asdf.other as bookmarks (bookmarks.id)}
-						<BookmarkGroup {bookmarks} />
-					{/each}
-				</div>
-				<div class="space-y-2">
-					{#each asdf.intake as bookmarks (bookmarks.id)}
-						<BookmarkGroup {bookmarks} />
-					{/each}
-					{#each asdf.youtube as bookmarks (bookmarks.id)}
-						<BookmarkGroup {bookmarks} />
-					{/each}
-				</div>
-			{/await}
+			<div class="space-y-2">
+				{#each bookmarkGroups as data (data.id)}
+					<BookmarkGroup bookmarks={data} />
+				{/each}
+			</div>
+			<div class="space-y-2">
+				{#each intake as bookmarks (bookmarks.id)}
+					<BookmarkGroup {bookmarks} />
+				{/each}
+				{#each youtube as bookmarks (bookmarks.id)}
+					<BookmarkGroup {bookmarks} />
+				{/each}
+			</div>
 		{/if}
 	</div>
 </main>
