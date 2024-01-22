@@ -19,7 +19,7 @@
 	<h2 class="text-lg text-gray-500 dark:text-white font-semibold capitalize">
 		<InPlaceInput
 			onChange={(title) => chrome.bookmarks.update(bookmarks.id, { title })}
-			title={bookmarks.title}
+			value={bookmarks.title}
 		/>
 	</h2>
 	<button

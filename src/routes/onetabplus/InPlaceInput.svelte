@@ -1,6 +1,6 @@
 <script lang="ts">
-	let { onChange, title: value } = $props<{
-		title: string
+	let { onChange, value } = $props<{
+		value: string
 		onChange: (value: string) => void
 	}>()
 
