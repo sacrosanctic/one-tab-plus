@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { APP_NAME, BOOKMARK_NAMES } from '$lib/constants'
+	import { APP_NAME, BOOKMARK_NAMES, MAIN_PAGE } from '$lib/constants'
 	import {
 		getAppFolderId,
 		getBookmarkIdByTitle,
@@ -12,10 +12,16 @@
 	import BookmarkGroup from './BookmarkGroup.svelte'
 	import { browser } from '$app/environment'
 	import type { BookmarkType } from '$lib/types'
+	import type { Snapshot } from '@sveltejs/kit'
 
-	let bookmarkGroups: BookmarkType[] = $state([])
-	let intake: BookmarkType[] = $state([])
-	let youtube: BookmarkType[] = $state([])
+	export const snapshot: Snapshot<number> = {
+		capture: () => scrollY,
+		restore: (top) => {
+			const scrollFn = () => window.scrollBy({ behavior: 'smooth', top })
+
+			setTimeout(scrollFn, 500)
+		},
+	}
 
 	const loadRoot = () =>
 		getAppFolderId()
@@ -27,6 +33,11 @@
 						![BOOKMARK_NAMES.INTAKE, BOOKMARK_NAMES.YOUTUBE].some((v) => v === bookmark.title),
 				)
 			})
+
+	let scrollY: number = $state(0)
+	let bookmarkGroups: BookmarkType[] = $state([])
+	let intake: BookmarkType[] = $state([])
+	let youtube: BookmarkType[] = $state([])
 
 	$effect(() => {
 		const intakeId = getBookmarkIdByTitle('intake')
@@ -49,6 +60,8 @@
 		loadRoot().then((data) => (bookmarkGroups = data))
 	})
 </script>
+
+<svelte:window bind:scrollY />
 
 <svelte:head>
 	<title>{APP_NAME}</title>
