@@ -2,7 +2,7 @@
 	import type { BookmarkType } from '$lib/types'
 	import { getFavicon, openBookmark, removeBookmark } from '$lib/utils'
 
-	let { bookmark } = $props<{ bookmark: BookmarkType }>()
+	let { bookmark, onUpdate } = $props<{ bookmark: BookmarkType; onUpdate: () => void }>()
 
 	const formatDate = (date: number | undefined) => {
 		if (!date) return 'no date'
@@ -37,7 +37,7 @@
 		>
 			<button
 				class="w-4 opacity-0"
-				on:click={() => removeBookmark(bookmark)}
+				on:click={() => removeBookmark(bookmark).then(onUpdate)}
 			>
 				<i class="fas fa-xmark fa-lg text-gray-400" />
 			</button>
@@ -58,7 +58,7 @@
 					href={bookmark.url}
 					onclick={(e) => {
 						e.preventDefault()
-						openBookmark(bookmark)
+						openBookmark(bookmark).then(onUpdate)
 					}}
 				>
 					{bookmark.title}
