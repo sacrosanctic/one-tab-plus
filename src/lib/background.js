@@ -1,4 +1,4 @@
-import { onActionLeftClick, onActionRightClick } from '$lib/util'
+import { onActionLeftClick, onActionRightClick } from '$lib/utils'
 
 onActionLeftClick('saveCurrentTab')
 onActionRightClick()

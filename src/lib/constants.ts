@@ -6,3 +6,8 @@ export const ROOT_FOLDER_ID = '0'
 export const BOOKMARKS_BAR_ID = '1'
 export const OTHER_BOOKMARKS_ID = '2'
 export const ANIMATION_DURATION = 200
+
+export const BOOKMARK_NAMES = {
+	INTAKE: 'intake',
+	YOUTUBE: 'youtube',
+} as const

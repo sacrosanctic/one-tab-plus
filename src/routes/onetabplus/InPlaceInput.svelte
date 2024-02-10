@@ -1,40 +1,31 @@
-<script>
-	import { createEventDispatcher, onMount } from 'svelte'
+<script lang="ts">
+	let { onChange, value } = $props<{
+		value: string
+		onChange: (value: string) => void
+	}>()
 
-	export let title = ''
-	export let id
-
-	const dispatch = createEventDispatcher()
-	let editing = false,
-		original
-
-	onMount(() => (original = title))
-	const edit = () => (editing = true)
-	const focus = (el) => el.focus()
-
-	const submit = () => {
-		if (title !== original) {
-			dispatch('titleChange', { id, title })
-			original = title
-		}
-		editing = false
-	}
-
-	const cancel = (e) => {
-		if (e.key === 'Escape') {
-			e.preventDefault()
-			title = original
-			editing = false
-		}
-	}
+	let original = value
 </script>
 
-{#if editing}
-	<form on:submit|preventDefault={submit} class="inline-block">
-		<input bind:value={title} on:blur={submit} use:focus on:keydown={cancel} />
-	</form>
-{:else}
-	<button type="button" on:click={edit} class="text-left">
-		{title}
-	</button>
-{/if}
+<input
+	type="text"
+	class="bg-transparent"
+	bind:value
+	on:blur={() => {
+		if (value === original) return
+
+		onChange(value)
+		original = value
+	}}
+	onkeydown={(e) => {
+		if (e.key === 'Enter') {
+			e.preventDefault()
+			e.currentTarget.blur()
+		}
+
+		if (e.key === 'Escape') {
+			e.preventDefault()
+			value = original
+		}
+	}}
+/>

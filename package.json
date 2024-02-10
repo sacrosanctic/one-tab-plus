@@ -6,11 +6,11 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"storybook": "storybook dev -p 6006",
+		"sb": "storybook dev -p 6006",
 		"devext": "nodemon --watch src --watch static --exec \"vite build\" -e ts,css,svelte,js",
 		"build-storybook": "storybook build"
 	},
@@ -25,6 +25,7 @@
 		"@storybook/test": "^7.6.10",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@total-typescript/ts-reset": "^0.5.1",
 		"@types/chrome": "^0.0.258",
 		"@types/ramda": "^0.29.2",
 		"autoprefixer": "^10.4.17",
@@ -40,9 +41,8 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"storybook": "^7.6.10",
-		"svelte": "^4.0.0",
+		"svelte": "next",
 		"svelte-check": "^3.4.3",
-		"svelte-dnd-action": "^0.9.22",
 		"sveltekit-adapter-chrome-extension": "^2.0.0",
 		"tailwindcss": "^3.4.1",
 		"typescript": "^5.0.0",
@@ -52,7 +52,9 @@
 	"dependencies": {
 		"@formkit/auto-animate": "^0.8.1",
 		"@fortawesome/fontawesome-free": "^6.4.0",
+		"@types/sortablejs": "^1.15.7",
 		"ramda": "^0.29.0",
-		"ramda-adjunct": "^4.0.0"
+		"ramda-adjunct": "^4.0.0",
+		"sortablejs": "^1.15.2"
 	}
 }
