@@ -9,7 +9,7 @@
 
 <input
 	type="text"
-	class="bg-transparent"
+	class="bg-transparent w-full outline-none"
 	bind:value
 	on:blur={() => {
 		if (value === original) return
