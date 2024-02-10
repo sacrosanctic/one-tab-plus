@@ -46,10 +46,14 @@
 		chrome.bookmarks.onCreated.addListener(async (id, bookmark) => {
 			if (bookmark.parentId === (await intakeId)) {
 				intakeId.then(chrome.bookmarks.get).then((data) => (intake = data))
+
+				return
 			}
 
 			if (bookmark.parentId === (await youtubeId)) {
 				youtubeId.then(chrome.bookmarks.get).then((data) => (youtube = data))
+
+				return
 			}
 
 			loadRoot().then((data) => (bookmarkGroups = data))
