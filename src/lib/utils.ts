@@ -1,7 +1,7 @@
 import { assoc, objOf, path, pipe } from 'ramda'
 import { APP_FOLDER_NAME, BOOKMARK_NAMES, MAIN_PAGE, OTHER_BOOKMARKS_ID } from './constants'
 import type { BookmarkType } from './types'
-import { type SortableOptions } from 'sortablejs'
+import { type SortableEvent, type SortableOptions } from 'sortablejs'
 import sortablejs from 'sortablejs'
 import type { Action } from 'svelte/action'
 
@@ -76,12 +76,20 @@ export const openBookmark = async (bookmark: BookmarkType) => {
 	removeBookmark(bookmark)
 }
 
-export const moveBookmark = async (id: string, obj: { parentId: string; index: number }) => {
-	const bookmark = await chrome.bookmarks.get(id)
-	const parentId = path([0, 'parentId'], bookmark)!
+export const moveBookmark = async (e: SortableEvent) => {
+	const sameList = e.from.dataset.id === e.to.dataset.id
+	const sameIndex = e.newIndex === e.oldIndex
+	const lowerIndex = (e.newIndex ?? 0) > (e.oldIndex ?? 0)
 
-	await chrome.bookmarks.move(id, obj)
-	await deleteEmptyFolder(parentId)
+	if (!e.item.dataset.id) return
+	if (sameList && sameIndex) return
+
+	const index = (e.newIndex ?? 0) + (sameList && lowerIndex ? 1 : 0)
+	await chrome.bookmarks.move(e.item.dataset.id, {
+		parentId: e.to.dataset.id,
+		index,
+	})
+	deleteEmptyFolder2(e.from)
 }
 export const openAllTabs = async (id: string) => {
 	const children = await chrome.bookmarks.getChildren(id)
@@ -93,9 +101,26 @@ export const openAllTabs = async (id: string) => {
 	await deleteEmptyFolder(id)
 }
 
-export const deleteEmptyFolder = async (id: string) => {
+export const deleteEmptyFolder2 = async (el: HTMLElement) => {
+	const id = el.dataset.id
+	if (!id) return
+
 	const children = await chrome.bookmarks.getChildren(id)
-	if (!children.length) chrome.bookmarks.remove(id)
+	if (children.length) return
+
+	await chrome.bookmarks.remove(id)
+	el.parentElement?.parentElement?.remove()
+}
+
+export const deleteEmptyFolder = async (id: string | undefined) => {
+	if (!id) return false
+	const children = await chrome.bookmarks.getChildren(id)
+	if (children.length) {
+		return false
+	} else {
+		await chrome.bookmarks.remove(id)
+		return true
+	}
 }
 
 export const onBookmarkChange = (handler: () => void) => {

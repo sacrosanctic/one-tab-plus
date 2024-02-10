@@ -1,6 +1,6 @@
 <script lang="ts">
 	import InPlaceInput from './InPlaceInput.svelte'
-	import { addSortable, openAllTabs } from '$lib/utils'
+	import { addSortable, moveBookmark, openAllTabs } from '$lib/utils'
 	import type { BookmarkType } from '$lib/types'
 	import Bookmark from './Bookmark.svelte'
 
@@ -29,8 +29,12 @@
 
 	<section class="text-gray-500 text-lg dark:text-gray-400 w-full">
 		<ul
+			data-id={bookmarks.id}
 			class="space-y-2 min-h-16"
-			use:addSortable={{ group: 'same' }}
+			use:addSortable={{
+				group: 'same',
+				onEnd: moveBookmark,
+			}}
 		>
 			{#each children as bookmark (bookmark.id)}
 				<Bookmark

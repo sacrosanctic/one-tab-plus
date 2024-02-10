@@ -17,7 +17,10 @@
 	}
 </script>
 
-<li class="cursor-default">
+<li
+	class="cursor-default"
+	data-id={bookmark.id}
+>
 	{#if bookmark.url === ''}
 		<div
 			class="flex items-center gap-2 rounded-md p-2 bg-white dark:bg-inherit dark:border-gray-300 dark:border"
